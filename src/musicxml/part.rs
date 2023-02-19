@@ -17,7 +17,9 @@ pub fn parse_part(el: Node) -> Part {
             "id" => {
                 id = attr.value();
             }
-            _ => {}
+            _ => {
+                println!("UNKNOWN part attribute: {}", attr.name());
+            }
         }
     }
 
@@ -30,7 +32,7 @@ pub fn parse_part(el: Node) -> Part {
             }
             "" => {}
             _ => {
-                println!("UNKNOWN part child {}", child_name);
+                println!("UNKNOWN part child: {}", child_name);
             }
         }
     }

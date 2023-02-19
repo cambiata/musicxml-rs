@@ -34,7 +34,9 @@ pub fn parse_measure(el: Node) -> Measure {
             "number" => {
                 number = attr.value();
             }
-            _ => {}
+            _ => {
+                println!("Unhandled measure attribute: {}", attr.name());
+            }
         }
     }
 
@@ -115,7 +117,7 @@ pub fn parse_measure(el: Node) -> Measure {
             }
             "" => {}
             _ => {
-                panic!("UNKNOWN measure child {}", child_name);
+                panic!("UNKNOWN measure child: {}", child_name);
             }
         }
     }

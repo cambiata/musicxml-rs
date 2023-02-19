@@ -81,7 +81,7 @@ pub fn parse_attributes(el: Node) -> Attributes {
             }
             "" => {}
             _ => {
-                println!("UNKNOWN attributes child {}", child_name);
+                println!("UNKNOWN attributes child: {}", child_name);
             }
         }
     }

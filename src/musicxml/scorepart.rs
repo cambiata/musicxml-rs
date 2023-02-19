@@ -12,14 +12,19 @@ pub fn parse_scorepart(el: Node) -> ScorePart {
             "id" => {
                 id = attr.value();
             }
-            _ => {}
+            _ => {
+                println!("UNKNOWN scorepart attribute: {}", attr.name());
+            }
         }
     }
 
     for child in el.children() {
         let child_name = child.tag_name().name();
         match child.tag_name().name() {
-            _ => {}
+            "" => {}
+            _ => {
+                println!("UNKNOWN scorepart child: {}", child_name);
+            }
         }
     }
 

@@ -30,7 +30,9 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
             "directive" => {
                 directive = true;
             }
-            _ => {}
+            _ => {
+                println!("Unhandled direction attribute: {}", attr.name());
+            }
         }
     }
 
@@ -57,7 +59,9 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                                             number = num;
                                         }
                                     }
-                                    _ => {}
+                                    _ => {
+                                        println!("Unhandled wedge attribute: {}", attr.name());
+                                    }
                                 }
                             }
                             let wedge = DirectionType::Wedge { wedgetype, number };
@@ -89,21 +93,18 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                                 let jtem_name = jtem.tag_name().name();
                                 match jtem_name {
                                     "beat-unit" => {
-                                        println!("beat-unit");
                                         if let Some(n) = jtem.first_child() {
                                             beat_unit = n.text().unwrap();
-                                            println!("beat-unit {}", beat_unit);
                                         }
                                     }
                                     "per-minute" => {
-                                        println!("per-minute");
                                         if let Some(n) = jtem.first_child() {
                                             per_minute = n.text().unwrap().parse().unwrap();
                                         }
                                     }
                                     "" => {}
                                     _ => {
-                                        panic!("UNKNOWN metronome child:{}", jtem_name);
+                                        panic!("UNKNOWN metronome child: {}", jtem_name);
                                     }
                                 }
                             }

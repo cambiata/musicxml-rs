@@ -31,6 +31,14 @@ pub fn parse_note(el: Node, position: usize) -> Note {
     let mut lyricsAbove: Vec<Lyric> = vec![];
     let mut lyricsBelow: Vec<Lyric> = vec![];
 
+    for attr in el.attributes() {
+        match attr.name() {
+            _ => {
+                println!("Unhandled note attribute: {}", attr.name());
+            }
+        }
+    }
+
     for child in el.children() {
         let child_name = child.tag_name().name();
         match child_name {
@@ -83,7 +91,7 @@ pub fn parse_note(el: Node, position: usize) -> Note {
             }
             "" => {}
             _ => {
-                println!("UNKNOWN note child {}", child_name);
+                println!("UNKNOWN note child: {}", child_name);
             }
         }
     }

@@ -22,7 +22,9 @@ pub fn parse_score_partwise(el: Node) -> ScorePartwise {
             "version" => {
                 version = attr.value();
             }
-            _ => {}
+            _ => {
+                println!("UNKNOWN scorepartwise attribute: {}", attr.name());
+            }
         }
     }
 
@@ -47,7 +49,7 @@ pub fn parse_score_partwise(el: Node) -> ScorePartwise {
 
             "" => {}
             _ => {
-                println!("UNKNOWN score_partwise child {}", child_name);
+                println!("UNKNOWN score_partwise child: {}", child_name);
             }
         }
     }

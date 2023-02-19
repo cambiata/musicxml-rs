@@ -21,7 +21,9 @@ pub fn parse_barline(el: Node) -> Barline {
             "location" => {
                 location = Location::from_str(attr.value()).unwrap_or(Location::Right);
             }
-            _ => {}
+            _ => {
+                println!("Unhandled barline attribute: {}", attr.name());
+            }
         }
     }
 
@@ -41,14 +43,14 @@ pub fn parse_barline(el: Node) -> Barline {
                             repeatdirection = RepeatDirection::from_str(attr.value()).ok();
                         }
                         _ => {
-                            println!("Unhandled barline attribute {}", attr.name());
+                            println!("Unhandled repeat attribute: {}", attr.name());
                         }
                     }
                 }
             }
             "" => {}
             _ => {
-                println!("UNKNOWN barline child {}", child_name);
+                println!("UNKNOWN barline child: {}", child_name);
             }
         }
     }
