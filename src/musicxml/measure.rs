@@ -1,7 +1,12 @@
 use roxmltree::{Node, NodeType};
 
+use crate::musicxml::barline::parse_barline;
+
 use super::{
     attributes::{parse_attributes, Attributes},
+    barline::Barline,
+    core::{Location, Placement},
+    direction::{parse_direction, Direction},
     note::{parse_note, Note},
 };
 
@@ -9,15 +14,19 @@ use super::{
 pub struct Measure {
     pub number: String,
     pub notes: Vec<Note>,
+    pub directions: Vec<Direction>,
     pub attributes: Attributes,
 }
 
 pub fn parse_measure(el: Node) -> Measure {
     let mut number = "";
     let mut notes: Vec<Note> = vec![];
+    let mut directions: Vec<Direction> = vec![];
     let mut attributes: Attributes = Attributes::empty();
     let mut curr_pos: usize = 0;
-    let mut prev_note:Note;
+    let mut prev_note: Note;
+    let mut barline_left: Barline;
+    let mut barline_right: Barline;
 
     // let mut parts:Vec<Part> = [];
     for attr in el.attributes() {
@@ -30,86 +39,91 @@ pub fn parse_measure(el: Node) -> Measure {
     }
 
     for child in el.children() {
-        match child.node_type() {
-            NodeType::Element => {
-                let el_name = child.tag_name().name();
-                println!("el_name:{:?}", el_name);
-                match el_name {
-                    "note" => {
-                        let note = parse_note(child, curr_pos);
-                        println!("- note:{:?}", note);
-                        if note.chord {
-                            let len = notes.len()-1;
-                            if let Some(prev_note) = notes.get_mut(len) {
-                                prev_note.chord_notes.push(note);
-                            }
-                        } else {
-                            curr_pos += note.duration;
-                            notes.push(note);
-                        }
+        let child_name = child.tag_name().name();
+        match child_name {
+            "note" => {
+                let note = parse_note(child, curr_pos);
+                if note.chord {
+                    let len = notes.len() - 1;
+                    if let Some(prev_note) = notes.get_mut(len) {
+                        prev_note.chord_notes.push(note);
                     }
-                    "attributes" => {
-                        attributes = parse_attributes(child);
-                    }
+                } else {
+                    curr_pos += note.duration;
+                    notes.push(note);
+                }
+            }
+            "direction" => {
+                let direction = parse_direction(child, curr_pos);
+                directions.push(direction);
+            }
 
-                    "backup" => {
-                        for item in child.children() {
-                            match item.node_type() {
-                                NodeType::Element => {
-                                    let item_name = item.tag_name().name();
-                                    println!("item_name:{:?}", item_name);
-                                    match item_name {
-                                        "duration" => {
-                                            let text = item.text();
-                                            if let Some(x) = text {
-                                                curr_pos -= x.parse().unwrap_or(0);
-                                            }
-                                        }
-                                        _ => {
+            "attributes" => {
+                attributes = parse_attributes(child);
+            }
 
-                                        }
-                                    }
-                                }
-                                _ => {
-                                }
-                            }
-                        }
-                    }
-
-                    "forward" => {
-                        for item in child.children() {
-                            match item.node_type() {
-                                NodeType::Element => {
-                                    let item_name = item.tag_name().name();
-                                    println!("item_name:{:?}", item_name);
-                                    match item_name {
-                                        "duration" => {
-                                            let text = item.text();
-                                            if let Some(x) = text {
-                                                curr_pos += x.parse().unwrap_or(0);
-                                            }
-                                        }
-                                        _ => {
-                                        }
+            "backup" => {
+                for item in child.children() {
+                    match item.node_type() {
+                        NodeType::Element => {
+                            let item_name = item.tag_name().name();
+                            println!("item_name:{:?}", item_name);
+                            match item_name {
+                                "duration" => {
+                                    let text = item.text();
+                                    if let Some(x) = text {
+                                        curr_pos -= x.parse().unwrap_or(0);
                                     }
                                 }
                                 _ => {}
                             }
                         }
+                        _ => {}
                     }
-
-                    _ => {}
                 }
             }
-            _ => {}
+
+            "forward" => {
+                for item in child.children() {
+                    match item.node_type() {
+                        NodeType::Element => {
+                            let item_name = item.tag_name().name();
+                            println!("item_name:{:?}", item_name);
+                            match item_name {
+                                "duration" => {
+                                    let text = item.text();
+                                    if let Some(x) = text {
+                                        curr_pos += x.parse().unwrap_or(0);
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+            "sound" => {
+                println!("Unhandled measure child: sound");
+            }
+            "barline" => {
+                let barline = parse_barline(child);
+                match barline.location {
+                    Location::Left => barline_left = barline,
+                    Location::Right => barline_right = barline,
+                }
+            }
+            "" => {}
+            _ => {
+                panic!("UNKNOWN measure child {}", child_name);
+            }
         }
     }
-    for note in &notes {
-        println!("note:{:?}-{}", note.position, note.chord_notes.len());
-    }
+
     Measure {
         number: number.to_string(),
         notes,
         attributes,
+        directions,
     }
 }
