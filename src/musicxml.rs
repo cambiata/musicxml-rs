@@ -5,6 +5,7 @@ pub mod attributes;
 pub mod barline;
 pub mod core;
 pub mod direction;
+pub mod harmony;
 pub mod measure;
 pub mod note;
 pub mod part;

@@ -1,12 +1,13 @@
 use roxmltree::{Node, NodeType};
 
-use crate::musicxml::barline::parse_barline;
+use crate::musicxml::{barline::parse_barline, harmony::Harmony};
 
 use super::{
     attributes::{parse_attributes, Attributes},
     barline::Barline,
     core::{Location, Placement},
     direction::{parse_direction, Direction},
+    harmony::parse_harmony,
     note::{parse_note, Note},
 };
 
@@ -43,6 +44,7 @@ pub fn parse_measure(el: Node) -> Measure {
     for child in el.children() {
         let child_name = child.tag_name().name();
         match child_name {
+
             "note" => {
                 let note = parse_note(child, curr_pos);
                 if note.chord {
@@ -55,6 +57,7 @@ pub fn parse_measure(el: Node) -> Measure {
                     notes.push(note);
                 }
             }
+
             "direction" => {
                 let direction = parse_direction(child, curr_pos);
                 directions.push(direction);
@@ -85,6 +88,11 @@ pub fn parse_measure(el: Node) -> Measure {
                 }
             }
 
+            "harmony" => {
+                let harmony = parse_harmony(child);
+                println!("harmony:{:?}", harmony);
+            }
+
             "forward" => {
                 for item in child.children() {
                     match item.node_type() {
@@ -105,9 +113,11 @@ pub fn parse_measure(el: Node) -> Measure {
                     }
                 }
             }
+
             "sound" => {
                 println!("Unhandled measure child: sound");
             }
+            
             "barline" => {
                 let barline = parse_barline(child);
                 match barline.location {

@@ -106,14 +106,25 @@ pub fn parse_option_key(el: Node) -> Option<Key> {
                     }
                 }
             }
+            "mode" => {
+                println!("unimplemented key child {}", child_name);
+            }
             "" => {}
             _ => {
-                println!("UNKNOWN key child {}", child_name);
+                println!("UNKNOWN key child: {}", child_name);
             }
         }
     }
     key
 }
+
+/*
+       <key number="1">
+         <fifths>2</fifths>
+         <mode>major</mode>
+       </key>
+
+*/
 
 pub fn parse_option_time(el: Node) -> Option<Time> {
     let mut beats: u8 = 0;
@@ -137,7 +148,7 @@ pub fn parse_option_time(el: Node) -> Option<Time> {
             }
             "" => {}
             _ => {
-                println!("UNKNOWN time child {}", child_name);
+                println!("UNKNOWN time child: {}", child_name);
             }
         }
     }
