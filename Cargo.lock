@@ -3,18 +3,10 @@
 version = 3
 
 [[package]]
-name = "memchr"
-version = "2.5.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
-
-[[package]]
-name = "quick-xml"
-version = "0.27.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ffc053f057dd768a56f62cd7e434c42c831d296968997e9ac1f76ea7c2d14c41"
+name = "musicxml-rs"
+version = "0.1.0"
 dependencies = [
- "memchr",
+ "roxmltree",
 ]
 
 [[package]]
@@ -24,14 +16,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "d8f595a457b6b8c6cda66a48503e92ee8d19342f905948f29c383200ec9eb1d8"
 dependencies = [
  "xmlparser",
-]
-
-[[package]]
-name = "testquickxml"
-version = "0.1.0"
-dependencies = [
- "quick-xml",
- "roxmltree",
 ]
 
 [[package]]
