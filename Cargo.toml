@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 roxmltree = "0.18.0"
+strum = "0.24.1"
+strum_macros = "0.24"

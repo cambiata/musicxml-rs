@@ -1,13 +1,16 @@
 use self::scorepartwise::ScorePartwise;
 use roxmltree::{Document, Node, NodeType};
 use std::error::Error;
-mod attributes;
-mod core;
-mod measure;
+pub mod attributes;
+pub mod barline;
+pub mod core;
+pub mod direction;
+pub mod harmony;
+pub mod measure;
 pub mod note;
-mod part;
-mod scorepart;
-mod scorepartwise;
+pub mod part;
+pub mod scorepart;
+pub mod scorepartwise;
 
 //-----------------------------
 pub fn parse(xml: String) -> Result<ScorePartwise, Box<dyn Error>> {
