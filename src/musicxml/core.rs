@@ -1,4 +1,3 @@
-use std::str::FromStr;
 use strum_macros::EnumString;
 
 #[derive(Debug)]
@@ -71,4 +70,19 @@ pub enum BarStyle {
     HeavyLight,
     #[strum(serialize = "light-heavy")]
     LightHeavy,
+}
+
+#[derive(Debug)]
+pub struct Pitch {
+    pub step: char,
+    pub octave: u8,
+}
+
+#[derive(Debug)]
+pub struct Lyric {
+    pub number: u8,
+    pub placement: Placement,
+    pub syllabic: SyllabicType,
+    pub text: String,
+    pub extend: bool,
 }

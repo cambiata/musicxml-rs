@@ -19,6 +19,19 @@ pub struct Measure {
     pub attributes: Attributes,
 }
 
+impl Measure {
+    pub fn get_voice(&self, voice_idx: u8) -> Vec<&Note> {
+        // let mut voice: Vec<&Note> = self.notes.iter().filter(|n| n.voice == voice_idx).collect();
+        // voice
+        let mut voice: Vec<&Note> = vec![];
+        for n in &self.notes {
+            if (n.voice == voice_idx) {
+                voice.push(n)
+            };
+        }
+        voice
+    }
+}
 pub fn parse_measure(el: Node) -> Measure {
     let mut number = "";
     let mut notes: Vec<Note> = vec![];
@@ -44,7 +57,6 @@ pub fn parse_measure(el: Node) -> Measure {
     for child in el.children() {
         let child_name = child.tag_name().name();
         match child_name {
-
             "note" => {
                 let note = parse_note(child, curr_pos);
                 if note.chord {
@@ -76,8 +88,29 @@ pub fn parse_measure(el: Node) -> Measure {
                             match item_name {
                                 "duration" => {
                                     let text = item.text();
-                                    if let Some(x) = text {
-                                        curr_pos -= x.parse().unwrap_or(0);
+                                    if let Some(txt) = text {
+                                        curr_pos -= txt.trim().parse().unwrap_or(0);
+                                    }
+                                }
+                                _ => {}
+                            }
+                        }
+                        _ => {}
+                    }
+                }
+            }
+
+            "forward" => {
+                for item in child.children() {
+                    match item.node_type() {
+                        NodeType::Element => {
+                            let item_name = item.tag_name().name();
+                            // println!("item_name:{:?}", item_name);
+                            match item_name {
+                                "duration" => {
+                                    let text = item.text();
+                                    if let Some(txt) = text {
+                                        curr_pos += txt.trim().parse().unwrap_or(0);
                                     }
                                 }
                                 _ => {}
@@ -93,31 +126,10 @@ pub fn parse_measure(el: Node) -> Measure {
                 println!("harmony:{:?}", harmony);
             }
 
-            "forward" => {
-                for item in child.children() {
-                    match item.node_type() {
-                        NodeType::Element => {
-                            let item_name = item.tag_name().name();
-                            println!("item_name:{:?}", item_name);
-                            match item_name {
-                                "duration" => {
-                                    let text = item.text();
-                                    if let Some(x) = text {
-                                        curr_pos += x.parse().unwrap_or(0);
-                                    }
-                                }
-                                _ => {}
-                            }
-                        }
-                        _ => {}
-                    }
-                }
-            }
-
             "sound" => {
                 println!("Unhandled measure child: sound");
             }
-            
+
             "barline" => {
                 let barline = parse_barline(child);
                 match barline.location {
@@ -125,6 +137,7 @@ pub fn parse_measure(el: Node) -> Measure {
                     Location::Right => barline_right = barline,
                 }
             }
+            "print" => {}
             "" => {}
             _ => {
                 panic!("UNKNOWN measure child: {}", child_name);
@@ -137,5 +150,35 @@ pub fn parse_measure(el: Node) -> Measure {
         notes,
         attributes,
         directions,
+    }
+}
+
+#[cfg(test)]
+mod test_measure {
+    use roxmltree::Document;
+
+    use crate::musicxml::measure::parse_measure;
+
+    static XML:&str = "<measure number=\"1\"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure>";
+
+    #[test]
+    fn example() {
+        let item = parse_measure(Document::parse(&XML).unwrap().root_element());
+        assert_eq!(1, item.notes.len());
+    }
+
+    #[test]
+    fn test_backup() {
+        let xml = "<measure number=\"1\" ><note ><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>quarter</type><stem>up</stem>
+        </note><note ><pitch><step>G</step><octave>4</octave></pitch><duration>1</duration><voice>1</voice><type>quarter</type><stem>up</stem></note><note><rest/>
+        <duration>2</duration><voice>1</voice><type>half</type></note><backup><duration>4</duration></backup><note ><pitch><step>E</step><alter>-1</alter><octave>4</octave>
+        </pitch><duration>1</duration><voice>2</voice><type>quarter</type><accidental>flat</accidental><stem>down</stem></note><note><rest/><duration>1</duration>
+        <voice>2</voice><type>quarter</type></note><note><rest/><duration>2</duration><voice>2</voice><type>half</type></note></measure>";
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        assert_eq!(6, item.notes.len());
+        let voice1 = item.get_voice(1);
+        let voice2 = item.get_voice(2);
+        assert_eq!(3, voice1.len());
+        assert_eq!(3, voice2.len());
     }
 }
