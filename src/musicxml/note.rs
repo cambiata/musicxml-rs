@@ -1,4 +1,4 @@
-use super::core::{DirectionUD, Placement, SyllabicType};
+use super::core::{DirectionUD, Lyric, Pitch, Placement, SyllabicType};
 use roxmltree::{Node, NodeType};
 use std::str::FromStr;
 
@@ -10,6 +10,7 @@ pub struct Note {
     pub voice: u8,
     pub staff: u8,
     pub rest: bool,
+    pub dots: u8,
     pub stem: Option<DirectionUD>,
     pub position: usize,
     pub chord: bool,
@@ -20,11 +21,12 @@ pub struct Note {
 
 pub fn parse_note(el: Node, position: usize) -> Note {
     let mut duration: usize = 0;
-    let mut nodetype = "";
+    let mut notetype = "";
     let mut pitch: Option<Pitch> = None;
     let mut voice: u8 = 1;
     let mut staff: u8 = 1;
     let mut rest: bool = false;
+    let mut dots: u8 = 0;
     let mut stem: Option<DirectionUD> = None;
     let mut chord: bool = false;
     let mut chord_notes: Vec<Note> = vec![];
@@ -33,6 +35,8 @@ pub fn parse_note(el: Node, position: usize) -> Note {
 
     for attr in el.attributes() {
         match attr.name() {
+            "default-x" => {} // TODO?
+            "default-y" => {} // TODO?
             _ => {
                 println!("Unhandled note attribute: {}", attr.name());
             }
@@ -44,14 +48,14 @@ pub fn parse_note(el: Node, position: usize) -> Note {
         match child_name {
             "duration" => {
                 let text = child.text();
-                if let Some(x) = text {
-                    duration = x.parse().unwrap_or(0);
+                if let Some(txt) = text {
+                    duration = txt.trim().parse().unwrap_or(0);
                 }
             }
             "type" => {
                 let text = child.text();
-                if let Some(x) = text {
-                    nodetype = x;
+                if let Some(txt) = text {
+                    notetype = txt.trim();
                 }
             }
             "pitch" => {
@@ -66,15 +70,18 @@ pub fn parse_note(el: Node, position: usize) -> Note {
             }
             "voice" => {
                 if let Some(text) = child.text() {
-                    voice = text.parse().unwrap_or(1);
+                    voice = text.trim().parse().unwrap_or(1);
                 };
             }
             "rest" => {
                 rest = true;
             }
+            "dot" => {
+                dots += 1;
+            }
             "stem" => {
                 if let Some(text) = child.text() {
-                    stem = match text.to_lowercase().as_str() {
+                    stem = match text.trim().to_lowercase().as_str() {
                         "up" => Some(DirectionUD::Up),
                         "down" => Some(DirectionUD::Down),
                         _ => None,
@@ -99,10 +106,11 @@ pub fn parse_note(el: Node, position: usize) -> Note {
     Note {
         pitch,
         duration,
-        notetype: nodetype.to_string(),
+        notetype: notetype.to_string(),
         voice,
         staff,
         rest,
+        dots,
         stem,
         position,
         chord,
@@ -110,12 +118,6 @@ pub fn parse_note(el: Node, position: usize) -> Note {
         lyricsAbove,
         lyricsBelow,
     }
-}
-
-#[derive(Debug)]
-pub struct Pitch {
-    step: char,
-    octave: u8,
 }
 
 pub fn parse_option_pitch(el: Node) -> Option<Pitch> {
@@ -145,15 +147,6 @@ pub fn parse_option_pitch(el: Node) -> Option<Pitch> {
         }
     }
     Some(Pitch { step, octave })
-}
-
-#[derive(Debug)]
-pub struct Lyric {
-    number: u8,
-    placement: Placement,
-    syllabic: SyllabicType,
-    text: String,
-    extend: bool,
 }
 
 pub fn parse_option_lyric(el: Node) -> Lyric {
@@ -208,5 +201,28 @@ pub fn parse_option_lyric(el: Node) -> Lyric {
         syllabic,
         text: text.to_string(),
         extend,
+    }
+}
+
+#[cfg(test)]
+mod tests_note {
+    use super::parse_note;
+    use roxmltree::Document;
+
+    #[test]
+    fn note() {
+        let xml = "<note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note>";
+        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
+        assert_eq!(4, note.duration);
+        let pitch = &note.pitch.unwrap();
+        assert_eq!('C', pitch.step);
+        assert_eq!(4, pitch.octave);
+    }
+
+    #[test]
+    fn doubledot() {
+        let xml = "<note><pitch><step>G</step><octave>4</octave></pitch><duration>7</duration><voice>1</voice><type>half</type><dot/><dot/><stem>up</stem></note>";
+        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
+        assert_eq!(2, note.dots);
     }
 }

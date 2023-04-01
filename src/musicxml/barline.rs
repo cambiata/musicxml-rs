@@ -32,7 +32,7 @@ pub fn parse_barline(el: Node) -> Barline {
         match child_name {
             "bar-style" => {
                 if let Some(txt) = child.text() {
-                    barstyle = BarStyle::from_str(txt)
+                    barstyle = BarStyle::from_str(txt.trim())
                         .expect(format!("Unknown barstyle: {}", txt).as_str());
                 }
             }
