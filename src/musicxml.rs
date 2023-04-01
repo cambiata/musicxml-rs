@@ -13,6 +13,7 @@ pub mod scorepart;
 pub mod scorepartwise;
 pub mod pitch;
 pub mod lyric;
+pub mod notations;
 
 //-----------------------------
 pub fn parse(xml: String) -> Result<ScorePartwise, Box<dyn Error>> {

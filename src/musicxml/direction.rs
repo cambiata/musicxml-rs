@@ -2,8 +2,8 @@ use std::str::FromStr;
 
 use crate::musicxml::core::{DirectionType, WedgeType};
 
-use super::core::{DirectionUD, Placement, SyllabicType};
-use roxmltree::{Node, NodeType};
+use super::core::{ Placement};
+use roxmltree::{Node};
 
 #[derive(Debug)]
 pub struct Direction {
@@ -86,7 +86,6 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                             }
                         }
                         "metronome" => {
-                            println!("metronome");
                             let mut beat_unit = "quarter";
                             let mut per_minute: u8 = 0;
                             for jtem in item.children() {
@@ -164,7 +163,31 @@ mod test_direction {
             let dir_type = &item.directiontypes[0];
             println!("dir_type:{:?}", dir_type);
         }
+    }
+    #[test]
+    fn test_tempi()  {
+        {
+            let xml = r#"<direction placement="above" directive="yes">
+            <direction-type>
+              <words font-style="normal" font-weight="bold">Allegro moderato</words>
+            </direction-type>
+            <direction-type>
+              <metronome>
+                <beat-unit>quarter</beat-unit>
+                <per-minute>120</per-minute>
+              </metronome>
+            </direction-type>
+            <staff>1</staff>
+          </direction>"#;
+            let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
+            assert_eq!(item.staff, 1);
+            assert_eq!(item.directiontypes.len(), 2);
+            
+            let dir_type0 = &item.directiontypes[0];
+            println!("dir_type0:{:?}", dir_type0);
+            let dir_type1 = &item.directiontypes[1];
+            println!("dir_type1:{:?}", dir_type1);
 
-
+        }
     }
 }

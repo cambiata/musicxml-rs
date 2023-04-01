@@ -227,4 +227,126 @@ mod test_measure {
             println!("direction:{:?}", direction);
         }
     }
+
+    #[test]
+    fn test_note_values() {
+        let xml = r#"<measure number="1">
+        <attributes>
+          <divisions>16</divisions>
+          <key number="1">
+            <fifths>0</fifths>
+            <mode>none</mode>
+          </key>
+          <staves>1</staves>
+          <clef number="1">
+            <sign>G</sign>
+            <line>2</line>
+          </clef>
+        </attributes>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>128</duration>
+          <voice>1</voice>
+          <type>breve</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>64</duration>
+          <voice>1</voice>
+          <type>whole</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>32</duration>
+          <voice>1</voice>
+          <type>half</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>16</duration>
+          <voice>1</voice>
+          <type>quarter</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>8</duration>
+          <voice>1</voice>
+          <type>eighth</type>
+          <stem>up</stem>
+          <staff>1</staff>
+          <beam number="1">begin</beam>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>4</duration>
+          <voice>1</voice>
+          <type>16th</type>
+          <stem>up</stem>
+          <staff>1</staff>
+          <beam number="1">continue</beam>
+          <beam number="2">begin</beam>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>2</duration>
+          <voice>1</voice>
+          <type>32nd</type>
+          <stem>up</stem>
+          <staff>1</staff>
+          <beam number="1">continue</beam>
+          <beam number="2">continue</beam>
+          <beam number="3">begin</beam>
+        </note>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>1</duration>
+          <voice>1</voice>
+          <type>64th</type>
+          <stem>up</stem>
+          <staff>1</staff>
+          <beam number="1">end</beam>
+          <beam number="2">end</beam>
+          <beam number="3">end</beam>
+          <beam number="4">backward hook</beam>
+        </note>
+        <barline location="right">
+          <bar-style>light-heavy</bar-style>
+        </barline>
+      </measure>"#;
+
+      let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+
+    }
 }

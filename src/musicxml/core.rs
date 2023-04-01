@@ -1,5 +1,26 @@
 use strum_macros::EnumString;
 
+
+#[derive(Debug, EnumString, PartialEq)]
+pub enum DurationType {
+    #[strum(serialize = "64th")]
+    Sixtyfourth,
+    #[strum(serialize = "32nd")]
+    Thirtysecond,
+    #[strum(serialize = "16th")]
+    Sixteenth,
+    #[strum(serialize = "eighth")]
+    Eighth,
+    #[strum(serialize = "quarter")]
+    Quarter,
+    #[strum(serialize = "half")]
+    Half,
+    #[strum(serialize = "whole")]
+    Whole,
+    #[strum(serialize = "breve")]
+    Breve,
+}
+
 #[derive(Debug)]
 pub enum DirectionUD {
     Up,
@@ -85,4 +106,18 @@ pub struct Lyric {
     pub syllabic: SyllabicType,
     pub text: String,
     pub extend: bool,
+}
+
+#[derive(Debug)]
+pub enum NotationType {
+    Tied{s:StartStop},
+    Slur{s:StartStop, number:u8},
+}
+
+#[derive(Debug, EnumString)]
+pub enum StartStop {
+    #[strum(serialize = "start")]
+    Start,
+    #[strum(serialize = "stop")]
+    Stop,
 }
