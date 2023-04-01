@@ -1,6 +1,5 @@
 use strum_macros::EnumString;
 
-
 #[derive(Debug, EnumString, PartialEq)]
 pub enum DurationType {
     #[strum(serialize = "64th")]
@@ -95,7 +94,7 @@ pub enum BarStyle {
 
 #[derive(Debug)]
 pub struct Pitch {
-    pub step: char,
+    pub step: Step,
     pub octave: u8,
 }
 
@@ -110,14 +109,95 @@ pub struct Lyric {
 
 #[derive(Debug)]
 pub enum NotationType {
-    Tied{s:StartStop},
-    Slur{s:StartStop, number:u8},
+    Tied { s: StartStop },
+    Slur { s: StartStop, number: u8 },
 }
 
+#[derive(Debug, EnumString, PartialEq)]
+pub enum Step {
+    A,
+    B,
+    C,
+    D,
+    E,
+    F,
+    G,
+}
 #[derive(Debug, EnumString)]
 pub enum StartStop {
     #[strum(serialize = "start")]
     Start,
     #[strum(serialize = "stop")]
     Stop,
+}
+
+#[derive(Debug)]
+pub enum HarmonyItem {
+    Root { step: Step, alter: Option<u8> },
+    Kind { text: String, kind: HarmonyKind },
+    Bass { step: String, alter: Option<u8> },
+}
+
+#[derive(Debug, EnumString)]
+pub enum HarmonyKind {
+    #[strum(serialize = "major")]
+    Major,
+    #[strum(serialize = "minor")]
+    Minor,
+    #[strum(serialize = "augmented")]
+    Augmented,
+    #[strum(serialize = "diminished")]
+    Diminished,
+    #[strum(serialize = "dominant")]
+    Dominant,
+    #[strum(serialize = "major-seventh")]
+    MajorSeventh,
+    #[strum(serialize = "minor-seventh")]
+    MinorSeventh,
+    #[strum(serialize = "diminished-seventh")]
+    DiminishedSeventh,
+    #[strum(serialize = "half-diminished-seventh")]
+    HalfDiminishedSeventh,
+    #[strum(serialize = "augmented-seventh")]
+    AugmentedSeventh,
+    #[strum(serialize = "major-minor-seventh")]
+    MajorMinorSeventh,
+    #[strum(serialize = "dominant-ninth")]
+    DominantNinth,
+    #[strum(serialize = "major-ninth")]
+    MajorNinth,
+    #[strum(serialize = "minor-ninth")]
+    MinorNinth,
+    #[strum(serialize = "dominant-11th")]
+    Dominant11th,
+    #[strum(serialize = "major-11th")]
+    Major11th,
+    #[strum(serialize = "minor-11th")]
+    Minor11th,
+    #[strum(serialize = "dominant-13th")]
+    Dominant13th,
+    #[strum(serialize = "major-13th")]
+    Major13th,
+    #[strum(serialize = "minor-13th")]
+    Minor13th,
+    #[strum(serialize = "suspended-second")]
+    SuspendedSecond,
+    #[strum(serialize = "suspended-fourth")]
+    SuspendedFourth,
+    #[strum(serialize = "neapolitan")]
+    Neapolitan,
+    #[strum(serialize = "italian")]
+    Italian,
+    #[strum(serialize = "french")]
+    French,
+    #[strum(serialize = "german")]
+    German,
+    #[strum(serialize = "pedal")]
+    Pedal,
+    #[strum(serialize = "power")]
+    Power,
+    #[strum(serialize = "tristan")]
+    Tristan,
+    #[strum(serialize = "other")]
+    Other,
 }

@@ -1,7 +1,11 @@
-use super::{core::{DirectionUD, Lyric, Pitch, Placement, SyllabicType, NotationType, StartStop, DurationType}, lyric::parse_option_lyric, notations::parse_notations};
-use roxmltree::{Node, NodeType};
-use std::{str::FromStr, fmt::{self, format}};
+use super::{
+    core::{DirectionUD, DurationType, Lyric, NotationType, Pitch, Placement},
+    lyric::parse_option_lyric,
+    notations::parse_notations,
+};
 use crate::musicxml::pitch::parse_option_pitch;
+use roxmltree::Node;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Note {
@@ -18,7 +22,7 @@ pub struct Note {
     pub chord_notes: Vec<Note>,
     pub lyrics_above: Vec<Lyric>,
     pub lyrics_below: Vec<Lyric>,
-    pub notations:Vec<NotationType>,
+    pub notations: Vec<NotationType>,
 }
 
 pub fn parse_note(el: Node, position: usize) -> Note {
@@ -34,7 +38,7 @@ pub fn parse_note(el: Node, position: usize) -> Note {
     let mut chord_notes: Vec<Note> = vec![];
     let mut lyrics_above: Vec<Lyric> = vec![];
     let mut lyrics_below: Vec<Lyric> = vec![];
-    let mut notations:Vec<NotationType> = vec![];
+    let mut notations: Vec<NotationType> = vec![];
 
     for attr in el.attributes() {
         match attr.name() {
@@ -58,7 +62,8 @@ pub fn parse_note(el: Node, position: usize) -> Note {
             "type" => {
                 let text = child.text();
                 if let Some(txt) = text {
-                    notetype = DurationType::from_str(txt.trim()).expect(&format!("unandled duration type: {}", txt.trim()));
+                    notetype = DurationType::from_str(txt.trim())
+                        .expect(&format!("unandled duration type: {}", txt.trim()));
                 }
             }
             "pitch" => {
@@ -100,7 +105,7 @@ pub fn parse_note(el: Node, position: usize) -> Note {
                 chord = true;
             }
             "notations" => {
-                 notations = parse_notations(child);
+                notations = parse_notations(child);
             }
             "" => {}
             _ => {
@@ -127,9 +132,10 @@ pub fn parse_note(el: Node, position: usize) -> Note {
     }
 }
 
-
 #[cfg(test)]
 mod tests_note {
+    use crate::musicxml::core::Step;
+
     use super::parse_note;
     use roxmltree::Document;
 
@@ -139,7 +145,7 @@ mod tests_note {
         let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
         assert_eq!(4, note.duration);
         let pitch = &note.pitch.unwrap();
-        assert_eq!('C', pitch.step);
+        assert_eq!(Step::C, pitch.step);
         assert_eq!(4, pitch.octave);
     }
 
@@ -149,7 +155,7 @@ mod tests_note {
         let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
         assert_eq!(2, note.dots);
     }
-    
+
     #[test]
     fn notations() {
         let xml = r#"<note>
@@ -166,7 +172,7 @@ mod tests_note {
           <slur type="start" number="1"/>
           <tied type="stop"/>
         </notations>
-      </note>"#;
+        </note>"#;
         let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
         println!("note.notations:{:?}", note.notations);
     }

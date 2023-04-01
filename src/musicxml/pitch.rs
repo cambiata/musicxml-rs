@@ -1,9 +1,11 @@
-use roxmltree::{Document, Node, NodeType};
+use std::str::FromStr;
 
-use super::core::Pitch;
+use roxmltree::{Node, NodeType};
+
+use super::core::{Pitch, Step};
 
 pub fn parse_option_pitch(el: Node) -> Option<Pitch> {
-    let mut step: char = 'G';
+    let mut step: Step = Step::A;
     let mut octave: u8 = 0;
     for child in el.children() {
         let child_name = child.tag_name().name();
@@ -12,7 +14,7 @@ pub fn parse_option_pitch(el: Node) -> Option<Pitch> {
                 "step" => {
                     let text = child.text();
                     if let Some(t) = text {
-                        step = t.chars().next().unwrap();
+                        step = Step::from_str(t.trim()).unwrap();
                     }
                 }
                 "octave" => {
