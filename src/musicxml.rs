@@ -1,5 +1,5 @@
 use self::scorepartwise::ScorePartwise;
-use roxmltree::{Document, Node, NodeType};
+use roxmltree::{Document};
 use std::error::Error;
 pub mod attributes;
 pub mod barline;
@@ -11,6 +11,8 @@ pub mod note;
 pub mod part;
 pub mod scorepart;
 pub mod scorepartwise;
+pub mod pitch;
+pub mod lyric;
 
 //-----------------------------
 pub fn parse(xml: String) -> Result<ScorePartwise, Box<dyn Error>> {

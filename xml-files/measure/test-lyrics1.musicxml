@@ -1,0 +1,95 @@
+<measure number="1" width="484.81">
+  <print>
+    <system-layout>
+      <system-margins>
+        <left-margin>0.00</left-margin>
+        <right-margin>592.36</right-margin>
+      </system-margins>
+      <top-system-distance>170.00</top-system-distance>
+    </system-layout>
+  </print>
+  <attributes>
+    <divisions>2</divisions>
+    <key>
+      <fifths>2</fifths>
+      <mode>major</mode>
+    </key>
+    <time>
+      <beats>4</beats>
+      <beat-type>4</beat-type>
+    </time>
+    <clef>
+      <sign>G</sign>
+      <line>2</line>
+    </clef>
+  </attributes>
+  <note default-x="100.28" default-y="-30.00">
+    <pitch>
+      <step>G</step>
+      <octave>4</octave>
+    </pitch>
+    <duration>2</duration>
+    <voice>1</voice>
+    <type>quarter</type>
+    <stem>up</stem>
+    <lyric number="1" default-y="-40.00" relative-y="-30.00">
+      <syllabic>begin</syllabic>
+      <text>Hej</text>
+    </lyric>
+  </note>
+  <note default-x="188.27" default-y="-30.00">
+    <pitch>
+      <step>G</step>
+      <octave>4</octave>
+    </pitch>
+    <duration>2</duration>
+    <voice>1</voice>
+    <type>quarter</type>
+    <stem>up</stem>
+  </note>
+  <note default-x="276.25" default-y="-30.00">
+    <pitch>
+      <step>G</step>
+      <octave>4</octave>
+    </pitch>
+    <duration>2</duration>
+    <voice>1</voice>
+    <type>quarter</type>
+    <stem>up</stem>
+    <lyric number="1" default-x="0.40" default-y="-40.00" relative-y="-30.00">
+      <syllabic>single</syllabic>
+      <text>san!</text>
+      <extend/>
+    </lyric>
+  </note>
+  <note default-x="364.23" default-y="-30.00">
+    <pitch>
+      <step>G</step>
+      <octave>4</octave>
+    </pitch>
+    <duration>1</duration>
+    <voice>1</voice>
+    <type>eighth</type>
+    <stem>up</stem>
+    <beam number="1">begin</beam>
+  </note>
+  <note default-x="419.22" default-y="-30.00">
+    <pitch>
+      <step>G</step>
+      <octave>4</octave>
+    </pitch>
+    <duration>1</duration>
+    <voice>1</voice>
+    <type>eighth</type>
+    <stem>up</stem>
+    <beam number="1">end</beam>
+    <lyric number="1" default-x="6.58" default-y="-40.00" relative-y="-30.00">
+      <syllabic>single</syllabic>
+      <text>och</text>
+    </lyric>
+  </note>
+  <barline location="right">
+    <bar-style>light-heavy</bar-style>
+  </barline>
+</measure>
+

@@ -9,9 +9,30 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "95505c38b4572b2d910cecb0281560f54b440a19336cbbcb27bf6ce6adc6f5a8"
 
 [[package]]
+name = "inline-xml"
+version = "0.2.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0d678d5f712a85c7d8391b747ed7567251337e36742a52b8f2e608ed3081e310"
+dependencies = [
+ "inline-xml-macros",
+]
+
+[[package]]
+name = "inline-xml-macros"
+version = "0.1.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "6694113cc3331ee000e13b25a08289f59f4818c6c88795a0c7f1f3ecf9294ef4"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn",
+]
+
+[[package]]
 name = "musicxml-rs"
 version = "0.1.0"
 dependencies = [
+ "inline-xml",
  "roxmltree",
  "strum",
  "strum_macros",
@@ -71,9 +92,9 @@ dependencies = [
 
 [[package]]
 name = "syn"
-version = "1.0.107"
+version = "1.0.109"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1f4064b5b16e03ae50984a5a8ed5d4f8803e6bc1fd170a3cda91a1be4b18e3f5"
+checksum = "72b64191b275b66ffe2469e8af2c1cfe3bafa67b529ead792a6d0160888b4237"
 dependencies = [
  "proc-macro2",
  "quote",

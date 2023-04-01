@@ -6,7 +6,7 @@ pub enum DirectionUD {
     Down,
 }
 
-#[derive(Debug, EnumString)]
+#[derive(Debug, EnumString, PartialEq)]
 pub enum SyllabicType {
     #[strum(serialize = "begin")]
     Begin,
@@ -16,7 +16,7 @@ pub enum SyllabicType {
     Single,
 }
 
-#[derive(Debug, EnumString)]
+#[derive(Debug, EnumString, PartialEq)]
 pub enum Placement {
     #[strum(serialize = "above")]
     Above,

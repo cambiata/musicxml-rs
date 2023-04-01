@@ -141,3 +141,30 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
         placement,
     }
 }
+
+
+#[cfg(test)]
+mod test_direction {
+    use roxmltree::Document;
+
+    use super::parse_direction;
+
+    #[test]
+    fn test1()  {
+        {
+            let xml = r#"<direction>
+            <direction-type>
+              <wedge type="crescendo" number="1"/>
+            </direction-type>
+            <staff>1</staff>
+          </direction>"#;
+            let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
+            assert_eq!(item.staff, 1);
+            assert_eq!(item.directiontypes.len(), 1);
+            let dir_type = &item.directiontypes[0];
+            println!("dir_type:{:?}", dir_type);
+        }
+
+
+    }
+}
