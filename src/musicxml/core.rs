@@ -111,6 +111,7 @@ pub struct Lyric {
 pub enum NotationType {
     Tied { s: StartStop },
     Slur { s: StartStop, number: u8 },
+    Articulations(ArticulationType, Placement),
 }
 
 #[derive(Debug, EnumString, PartialEq)]
@@ -201,3 +202,17 @@ pub enum HarmonyKind {
     #[strum(serialize = "other")]
     Other,
 }
+
+#[derive(Debug, EnumString, PartialEq)]
+pub enum ArticulationType {
+    #[strum(serialize = "staccato")]
+    Staccato,
+    #[strum(serialize = "tenuto")]
+    Tenuto,
+    #[strum(serialize = "accent")]
+    Accent,
+    #[strum(serialize = "strong-accent")]
+    StrongAccent,
+}
+#[derive(Debug,  PartialEq)]
+pub struct Articulation(pub ArticulationType, pub Option<Placement>, pub String);
