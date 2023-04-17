@@ -1,5 +1,5 @@
-use roxmltree::{Document, Node, NodeType};
-use std::error::Error;
+use roxmltree::{Node, NodeType};
+
 
 use crate::musicxml::{
     part::{parse_part, Part},

@@ -1,11 +1,11 @@
 use roxmltree::{Node, NodeType};
 
-use crate::musicxml::{barline::parse_barline, harmony::Harmony};
+use crate::musicxml::{barline::parse_barline};
 
 use super::{
     attributes::{parse_attributes, Attributes},
     barline::Barline,
-    core::{Location, Placement},
+    core::{Location},
     direction::{parse_direction, Direction},
     harmony::parse_harmony,
     note::{parse_note, Note},
@@ -37,7 +37,7 @@ pub fn parse_measure(el: Node) -> Measure {
     let mut directions: Vec<Direction> = vec![];
     let mut attributes: Attributes = Attributes::empty();
     let mut curr_pos: usize = 0;
-    let mut prev_note: Note;
+    let mut _prev_note: Note;
     let mut barline_left: Barline;
     let mut barline_right: Barline;
     let mut duration: usize = 0;

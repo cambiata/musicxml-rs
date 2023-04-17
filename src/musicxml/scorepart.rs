@@ -1,10 +1,9 @@
 
-use roxmltree::{Node, NodeType};
+use roxmltree::{Node};
 
 use super::{
     mididevice::{parse_midi_device, MidiDevice},
     midiinstrument::{parse_midi_instrument, MidiInstrument},
-    part,
     scoreinstrument::{parse_score_instrument, ScoreInstrument},
 };
 #[derive(Debug)]

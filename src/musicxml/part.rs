@@ -1,4 +1,4 @@
-use roxmltree::{Node, NodeType};
+use roxmltree::{Node};
 
 use super::measure::{parse_measure, Measure};
 

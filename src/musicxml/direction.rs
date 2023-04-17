@@ -73,7 +73,7 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                             for jtem in item.children() {
                                 let jtem_name = jtem.tag_name().name();
                                 println!("- - - {}", jtem_name);
-                                if (jtem_name.len() > 0) {
+                                if jtem_name.len() > 0 {
                                     directiontypes
                                         .push(DirectionType::Dynamic(jtem_name.to_string()));
                                 }
