@@ -135,7 +135,6 @@ pub fn parse_note(el: Node, position: usize) -> Note {
 #[cfg(test)]
 mod tests_note {
     use crate::musicxml::core::Step;
-
     use super::parse_note;
     use roxmltree::Document;
 

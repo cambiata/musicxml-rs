@@ -182,12 +182,10 @@ mod test_direction {
             let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
             assert_eq!(item.staff, 1);
             assert_eq!(item.directiontypes.len(), 2);
-            
             let dir_type0 = &item.directiontypes[0];
             println!("dir_type0:{:?}", dir_type0);
             let dir_type1 = &item.directiontypes[1];
             println!("dir_type1:{:?}", dir_type1);
-
         }
     }
 }
