@@ -1,9 +1,10 @@
-use std::error::Error;
+use prelude::*;
 use std::fs;
-
+mod error;
 mod musicxml;
+mod prelude;
 
-fn main() -> Result<(), Box<dyn Error>> {
+fn main() -> Result<()> {
     // let xml = fs::read_to_string("music.xml")?;
     let xml = fs::read_to_string("xml-files/articulation.xml")?;
     let score = musicxml::parse(xml)?;

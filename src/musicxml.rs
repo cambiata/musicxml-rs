@@ -1,6 +1,7 @@
+use crate::prelude::*;
+
 use self::scorepartwise::ScorePartwise;
 use roxmltree::Document;
-use std::error::Error;
 pub mod articulations;
 pub mod attributes;
 pub mod barline;
@@ -24,9 +25,9 @@ pub mod scorepartwise;
 pub mod work;
 
 //-----------------------------
-pub fn parse(xml: String) -> Result<ScorePartwise, Box<dyn Error>> {
+pub fn parse(xml: String) -> Result<ScorePartwise> {
     let doc = Document::parse(&xml)?;
     let element = doc.root_element();
-    let score_partwise = scorepartwise::parse_score_partwise(element);
+    let score_partwise = scorepartwise::parse_score_partwise(element)?;
     Ok(score_partwise)
 }
