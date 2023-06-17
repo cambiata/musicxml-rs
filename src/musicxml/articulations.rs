@@ -1,11 +1,11 @@
+use crate::prelude::*;
+use roxmltree::Node;
 use std::str::FromStr;
-
-use roxmltree::{Node};
 
 use crate::musicxml::core::{Articulation, Placement};
 
 use super::core::ArticulationType;
-pub fn parse_articulations(el: Node) -> Vec<Articulation> {
+pub fn parse_articulations(el: Node) -> Result<Vec<Articulation>> {
     let mut articulations: Vec<Articulation> = vec![];
 
     for child in el.children() {
@@ -27,6 +27,7 @@ pub fn parse_articulations(el: Node) -> Vec<Articulation> {
                         }
                         _ => {
                             println!("attr.name:{}", attr.name());
+                            return Err(UnknownAttribute(format!("attr.name:{}", attr.name())));
                         }
                     }
                 }
@@ -37,25 +38,26 @@ pub fn parse_articulations(el: Node) -> Vec<Articulation> {
             }
         }
     }
-    articulations
+    Ok(articulations)
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::prelude::*;
     use roxmltree::Document;
-
     use crate::musicxml::articulations::parse_articulations;
 
     #[test]
-    fn articulations() {
+    fn articulations() -> Result<()> {
         let xml = r#"<articulations>
               <staccato placement="below"/>
               <tenuto placement="below"/>
               <accent placement="below"/>
               <strong-accent placement="above" type="up"/>
             </articulations>"#;
-        let item = parse_articulations(Document::parse(&xml).unwrap().root_element());
+        let item = parse_articulations(Document::parse(&xml).unwrap().root_element())?;
 
         println!("notations:{:?}", item);
+        Ok(())
     }
 }

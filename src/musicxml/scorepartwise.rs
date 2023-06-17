@@ -52,13 +52,18 @@ pub fn parse_score_partwise(el: Node) -> Result<ScorePartwise> {
         match child_name {
             "part-list" => {
                 for item in child.children() {
-                    match item.node_type() {
-                        NodeType::Element => {
-                            let scorepart = parse_scorepart(item);
-                            partlist.push(scorepart);
-                        }
-                        _ => {}
+                    if item.node_type() == NodeType::Element {
+                        let scorepart = parse_scorepart(item);
+                        partlist.push(scorepart);
                     }
+
+                    // match item.node_type() {
+                    //     NodeType::Element => {
+                    //         let scorepart = parse_scorepart(item);
+                    //         partlist.push(scorepart);
+                    //     }
+                    //     _ => {}
+                    // }
                 }
             }
             "part" => {
@@ -84,10 +89,10 @@ pub fn parse_score_partwise(el: Node) -> Result<ScorePartwise> {
 
             "" => {}
             _ => {
-                return Err(UnknownElement(format!(
-                    "scorepartwise element: {child_name}"
-                )));
-                // println!("UNKNOWN score_partwise child: {}", child_name);
+                println!("Unknown score_partwise child: {}", child_name);
+                // return Err(UnknownElement(format!(
+                //     "scorepartwise element: {child_name}"
+                // )));
             }
         }
     }

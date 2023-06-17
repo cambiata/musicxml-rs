@@ -12,4 +12,4 @@ strum_macros = "0.24"
 thiserror = "1.0.40"
 
 [dev-dependencies]
-inline-xml = "0.2.3"
+# inline-xml = "0.2.3"

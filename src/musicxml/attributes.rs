@@ -123,7 +123,6 @@ pub fn parse_option_key(el: Node) -> Option<Key> {
          <fifths>2</fifths>
          <mode>major</mode>
        </key>
-
 */
 
 pub fn parse_option_time(el: Node) -> Option<Time> {

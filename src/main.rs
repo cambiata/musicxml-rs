@@ -1,3 +1,5 @@
+#![allow(dead_code, unused)]
+
 use prelude::*;
 use std::fs;
 mod error;
