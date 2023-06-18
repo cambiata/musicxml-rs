@@ -1,7 +1,7 @@
 use crate::prelude::*;
 
 use super::{
-    core::{DirectionUD, DurationType, Lyric, NotationType, Pitch, Placement},
+    core::{DirectionUD, Duration, DurationType, Lyric, NotationType, Pitch, Placement},
     lyric::parse_option_lyric,
     notations::parse_notations,
 };
@@ -11,7 +11,7 @@ use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Note {
-    pub duration: usize,
+    pub duration: Duration,
     pub notetype: DurationType,
     pub pitch: Option<Pitch>,
     pub voice: u8,
@@ -28,7 +28,7 @@ pub struct Note {
 }
 
 pub fn parse_note(el: Node, position: usize) -> Result<Note> {
-    let mut duration: usize = 0;
+    let mut duration: Duration = 0;
     let mut notetype: DurationType = DurationType::Quarter;
     let mut pitch: Option<Pitch> = None;
     let mut voice: u8 = 1;

@@ -7,7 +7,7 @@ use crate::musicxml::barline::parse_barline;
 use super::{
     attributes::{parse_attributes, Attributes},
     barline::Barline,
-    core::Location,
+    core::{Duration, Location},
     direction::{parse_direction, Direction},
     harmony::parse_harmony,
     harmony::Harmony,
@@ -20,7 +20,7 @@ pub struct Measure {
     pub notes: Vec<Note>,
     pub directions: Vec<Direction>,
     pub attributes: Attributes,
-    pub duration: usize,
+    pub duration: Duration,
     pub harmonies: Vec<Harmony>,
 }
 
@@ -44,7 +44,7 @@ pub fn parse_measure(el: Node) -> Result<Measure> {
     let mut _prev_note: Note;
     let mut barline_left: Barline;
     let mut barline_right: Barline;
-    let mut duration: usize = 0;
+    let mut duration: Duration = 0;
     let mut harmonies: Vec<Harmony> = vec![];
 
     // let mut parts:Vec<Part> = [];
@@ -466,8 +466,5 @@ mod test_measure {
         </note>
       </measure>"#;
         let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
-        // for harmony in item.harmonies {
-        //     println!("harmony:{:?}", harmony);
-        // }
     }
 }

@@ -1,4 +1,7 @@
+use std::str::FromStr;
 use strum_macros::EnumString;
+
+pub type Duration = usize;
 
 #[derive(Debug, EnumString, PartialEq)]
 pub enum DurationType {
@@ -110,7 +113,7 @@ pub struct Lyric {
     pub extend: bool,
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub enum NotationType {
     Tied { s: StartStop },
     Slur { s: StartStop, number: u8 },
@@ -127,7 +130,7 @@ pub enum Step {
     F,
     G,
 }
-#[derive(Debug, EnumString)]
+#[derive(Debug, EnumString, PartialEq)]
 pub enum StartStop {
     #[strum(serialize = "start")]
     Start,
@@ -221,3 +224,24 @@ pub enum ArticulationType {
 }
 #[derive(Debug, PartialEq)]
 pub struct Articulation(pub ArticulationType, pub Option<Placement>, pub String);
+
+#[cfg(test)]
+mod test_core {
+    use crate::musicxml::core::{ArticulationType, HarmonyKind, NotationType, Placement, Step};
+    use crate::prelude::*;
+    use std::str::FromStr;
+    use strum_macros::EnumString;
+
+    #[test]
+    fn example() {
+        assert_eq!(
+            ArticulationType::Tenuto,
+            ArticulationType::from_str("tenuto").unwrap()
+        );
+        assert_eq!(Placement::Above, Placement::from_str("above").unwrap());
+        assert_eq!(
+            NotationType::Articulations(ArticulationType::Tenuto, Some(Placement::Above)),
+            NotationType::Articulations(ArticulationType::Tenuto, Some(Placement::Above))
+        );
+    }
+}
