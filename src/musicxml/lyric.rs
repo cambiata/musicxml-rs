@@ -1,9 +1,6 @@
-use std::str::FromStr;
-
-use roxmltree::{Node, NodeType};
-
 use super::core::{Lyric, Placement, SyllabicType};
 use crate::prelude::*;
+use std::str::FromStr;
 
 pub fn parse_option_lyric(el: Node) -> Result<Lyric> {
     let mut number: u8 = 1;

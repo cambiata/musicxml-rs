@@ -1,7 +1,5 @@
 use crate::prelude::*;
 
-use roxmltree::Node;
-
 pub fn parse_credit(el: Node) -> Result<Credit> {
     for attr in el.attributes() {
         match attr.name() {

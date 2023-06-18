@@ -1,5 +1,5 @@
 use crate::prelude::*;
-use roxmltree::Node;
+
 pub fn parse_defaults(el: Node) -> Result<Defaults> {
     for attr in el.attributes() {
         match attr.name() {

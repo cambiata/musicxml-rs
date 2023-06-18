@@ -1,8 +1,6 @@
-use crate::prelude::*;
-use roxmltree::Node;
-use std::str::FromStr;
-
 use super::core::{BarStyle, Location, RepeatDirection};
+use crate::prelude::*;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Barline {

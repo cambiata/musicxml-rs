@@ -1,17 +1,12 @@
-use crate::prelude::*;
-use roxmltree::{Node, NodeType};
-
 use crate::musicxml::{
-    part::{parse_part, Part},
-    scorepart::{parse_scorepart, ScorePart},
-};
-
-use super::{
     credit::{parse_credit, Credit},
     defaults::{parse_defaults, Defaults},
     identification::{parse_identification, Identification},
+    part::{parse_part, Part},
+    scorepart::{parse_scorepart, ScorePart},
     work::{parse_work, Work},
 };
+use crate::prelude::*;
 
 #[derive(Debug)]
 pub struct ScorePartwise {

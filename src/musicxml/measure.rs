@@ -1,8 +1,5 @@
-use crate::prelude::*;
-
-use roxmltree::{Node, NodeType};
-
 use crate::musicxml::barline::parse_barline;
+use crate::prelude::*;
 
 use super::{
     attributes::{parse_attributes, Attributes},

@@ -1,11 +1,10 @@
-use crate::prelude::*;
-use roxmltree::Node;
-
-use super::{
+use crate::musicxml::{
     mididevice::{parse_midi_device, MidiDevice},
     midiinstrument::{parse_midi_instrument, MidiInstrument},
     scoreinstrument::{parse_score_instrument, ScoreInstrument},
 };
+use crate::prelude::*;
+
 #[derive(Debug)]
 pub struct ScorePart {
     pub id: String,

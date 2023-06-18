@@ -1,12 +1,11 @@
-use crate::prelude::*;
-
-use super::{
+use crate::musicxml::{
     core::{DirectionUD, Duration, DurationType, Lyric, NotationType, Pitch, Placement},
     lyric::parse_option_lyric,
     notations::parse_notations,
+    pitch::parse_option_pitch,
 };
-use crate::musicxml::pitch::parse_option_pitch;
-use roxmltree::Node;
+use crate::prelude::*;
+
 use std::str::FromStr;
 
 #[derive(Debug)]

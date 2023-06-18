@@ -1,9 +1,9 @@
-use super::core::NotationType;
-use crate::musicxml::core::Articulation;
-use crate::musicxml::{articulations::parse_articulations, core::StartStop};
+use crate::musicxml::articulations::parse_articulations;
+use crate::musicxml::core::{Articulation, NotationType, StartStop};
 use crate::prelude::*;
 use roxmltree::{Node, NodeType};
 use std::str::FromStr;
+
 pub fn parse_notations(el: Node) -> Result<Vec<NotationType>> {
     for attr in el.attributes() {
         match attr.name() {

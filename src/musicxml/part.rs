@@ -1,7 +1,5 @@
+use crate::musicxml::measure::{parse_measure, Measure};
 use crate::prelude::*;
-use roxmltree::Node;
-
-use super::measure::{parse_measure, Measure};
 
 #[derive(Debug)]
 pub struct Part {

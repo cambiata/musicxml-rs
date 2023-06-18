@@ -1,5 +1,3 @@
-use roxmltree::{Node, NodeType};
-
 use crate::prelude::*;
 
 #[derive(Debug)]

@@ -1,10 +1,6 @@
+use crate::musicxml::core::{DirectionType, Placement, WedgeType};
 use crate::prelude::*;
 use std::str::FromStr;
-
-use crate::musicxml::core::{DirectionType, WedgeType};
-
-use super::core::Placement;
-use roxmltree::Node;
 
 #[derive(Debug)]
 pub struct Direction {

@@ -1,7 +1,4 @@
-use std::error::Error;
-
 use crate::prelude::*;
-use roxmltree::Node;
 
 pub fn parse_work(el: Node) -> Result<Work> {
     let mut title: &str = "";

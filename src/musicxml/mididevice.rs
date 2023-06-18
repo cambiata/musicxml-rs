@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use roxmltree::Node;
 
 pub fn parse_midi_device(el: Node) -> Result<MidiDevice> {
     let mut id: &str = "";

@@ -1,7 +1,7 @@
 use super::core::{HarmonyItem, HarmonyKind, Step};
 use crate::prelude::*;
-use roxmltree::Node;
 use std::str::FromStr;
+
 #[derive(Debug)]
 pub struct Harmony {
     items: Vec<HarmonyItem>,

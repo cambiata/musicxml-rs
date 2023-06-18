@@ -1,5 +1,4 @@
 use crate::prelude::*;
-use roxmltree::Node;
 
 pub fn parse_identification(el: Node) -> Result<Identification> {
     for attr in el.attributes() {
