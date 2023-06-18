@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE score-partwise PUBLIC "-//Recordare//DTD MusicXML 3.1 Partwise//EN" "http://www.musicxml.org/dtds/partwise.dtd">
+<score-partwise version="3.1">
+	<part-list>
+		<score-part id="P1">
+			<part-name>
+				Piano
+			</part-name>
+			<part-abbreviation>
+				Pno.
+			</part-abbreviation>
+		</score-part>
+	</part-list>
+	<part id="P1">
+		<measure number="1" width="144.60">
+			<attributes>
+				<divisions>
+					1
+				</divisions>
+				<key>
+					<fifths>
+						0
+					</fifths>
+				</key>
+				<time>
+					<beats>
+						4
+					</beats>
+					<beat-type>
+						4
+					</beat-type>
+				</time>
+				<clef>
+					<sign>
+						G
+					</sign>
+					<line>
+						2
+					</line>
+				</clef>
+			</attributes>
+			<note default-x="79.27" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="2" width="95.30">
+			<barline location="left">
+				<bar-style>
+					heavy-light
+				</bar-style>
+				<repeat direction="forward" />
+			</barline>
+			<direction placement="above">
+				<direction-type>
+					<rehearsal default-x="-31.69" relative-y="30.00" font-weight="bold" font-size="14">
+						A
+					</rehearsal>
+				</direction-type>
+			</direction>
+			<note default-x="28.37" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="3" width="82.21">
+			<barline location="left">
+				<ending number="1" type="start" default-y="54.50" />
+			</barline>
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="4" width="82.21">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="5" width="93.70">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+			<barline location="right">
+				<bar-style>
+					light-heavy
+				</bar-style>
+				<ending number="1" type="stop" />
+				<repeat direction="backward" />
+			</barline>
+		</measure>
+		<measure number="6" width="82.53">
+			<barline location="left">
+				<ending number="2" type="start" default-y="54.50" />
+			</barline>
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+			<barline location="right">
+				<bar-style>
+					light-light
+				</bar-style>
+				<ending number="2" type="discontinue" />
+			</barline>
+		</measure>
+		<measure number="7" width="82.21">
+			<direction placement="above">
+				<direction-type>
+					<segno default-x="-8.00" relative-y="20.00" />
+				</direction-type>
+				<sound segno="segno" />
+			</direction>
+			<direction placement="above">
+				<direction-type>
+					<rehearsal default-x="-13.32" default-y="38.00" relative-y="30.00" font-weight="bold" font-size="14">
+						B
+					</rehearsal>
+				</direction-type>
+			</direction>
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="8" width="82.21">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+			<direction placement="above">
+				<direction-type>
+					<words relative-y="20.00">
+						To Coda
+					</words>
+				</direction-type>
+				<sound tocoda="coda" />
+			</direction>
+		</measure>
+		<measure number="9" width="82.21">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="10" width="82.21">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+			<direction placement="above">
+				<direction-type>
+					<words relative-y="20.00">
+						D.S. al Coda
+					</words>
+				</direction-type>
+				<sound dalsegno="segno" />
+			</direction>
+		</measure>
+		<measure number="11" width="82.21">
+			<direction placement="above">
+				<direction-type>
+					<coda default-x="-13.60" default-y="26.60" relative-y="20.00" />
+				</direction-type>
+				<sound coda="coda" />
+			</direction>
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+		</measure>
+		<measure number="12" width="85.93">
+			<note default-x="10.00" default-y="-30.00">
+				<pitch>
+					<step>
+						G
+					</step>
+					<octave>
+						4
+					</octave>
+				</pitch>
+				<duration>
+					4
+				</duration>
+				<voice>
+					1
+				</voice>
+				<type>
+					whole
+				</type>
+			</note>
+			<barline location="right">
+				<bar-style>
+					light-heavy
+				</bar-style>
+			</barline>
+		</measure>
+	</part>
+</score-partwise>

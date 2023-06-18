@@ -1,15 +1,14 @@
-use std::str::FromStr;
-
-use roxmltree::Node;
-
 use super::core::{HarmonyItem, HarmonyKind, Step};
+use roxmltree::Node;
+use std::str::FromStr;
 
 #[derive(Debug)]
 pub struct Harmony {
     items: Vec<HarmonyItem>,
+    position: usize,
 }
 
-pub fn parse_harmony(el: Node) -> Harmony {
+pub fn parse_harmony(el: Node, position: usize) -> Harmony {
     let mut items: Vec<HarmonyItem> = vec![];
 
     for attr in el.attributes() {
@@ -110,22 +109,8 @@ pub fn parse_harmony(el: Node) -> Harmony {
         }
     }
 
-    Harmony { items }
+    Harmony { items, position }
 }
-
-/*
-     <harmony>
-       <root>
-         <root-step>A</root-step>
-         <root-alter>0</root-alter>
-       </root>
-       <kind text="7">dominant</kind>
-       <bass>
-         <bass-step>E</bass-step>
-         <bass-alter>0</bass-alter>
-       </bass>
-     </harmony>
-*/
 
 #[cfg(test)]
 mod tests {
@@ -146,7 +131,7 @@ mod tests {
         </bass>
       </harmony>"#;
 
-        let item = parse_harmony(Document::parse(&xml).unwrap().root_element());
+        let item = parse_harmony(Document::parse(&xml).unwrap().root_element(), 0);
         println!("{:?}", item);
     }
 }

@@ -50,6 +50,9 @@ pub enum DirectionType {
     Dynamic(String),
     Words(String),
     Metronome { beat_unit: String, per_minute: u8 },
+    Rehersal { text: String },
+    Coda,
+    Segno,
 }
 
 #[derive(Debug, EnumString)]

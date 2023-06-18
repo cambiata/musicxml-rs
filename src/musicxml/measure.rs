@@ -1,11 +1,11 @@
 use roxmltree::{Node, NodeType};
 
-use crate::musicxml::{barline::parse_barline};
+use crate::musicxml::barline::parse_barline;
 
 use super::{
     attributes::{parse_attributes, Attributes},
     barline::Barline,
-    core::{Location},
+    core::Location,
     direction::{parse_direction, Direction},
     harmony::parse_harmony,
     note::{parse_note, Note},
@@ -17,7 +17,8 @@ pub struct Measure {
     pub notes: Vec<Note>,
     pub directions: Vec<Direction>,
     pub attributes: Attributes,
-    pub duration:usize,
+    pub duration: usize,
+    pub harmonies: Vec<Harmony>,
 }
 
 impl Measure {
@@ -41,6 +42,7 @@ pub fn parse_measure(el: Node) -> Measure {
     let mut barline_left: Barline;
     let mut barline_right: Barline;
     let mut duration: usize = 0;
+    let mut harmonies: Vec<Harmony> = vec![];
 
     // let mut parts:Vec<Part> = [];
     for attr in el.attributes() {
@@ -124,8 +126,8 @@ pub fn parse_measure(el: Node) -> Measure {
             }
 
             "harmony" => {
-                let harmony = parse_harmony(child);
-                println!("harmony:{:?}", harmony);
+                let harmony = parse_harmony(child, curr_pos);
+                harmonies.push(harmony);
             }
 
             "sound" => {
@@ -139,7 +141,7 @@ pub fn parse_measure(el: Node) -> Measure {
                     Location::Right => barline_right = barline,
                 }
             }
-            
+
             "print" => {}
             "" => {}
             _ => {
@@ -154,6 +156,7 @@ pub fn parse_measure(el: Node) -> Measure {
         attributes,
         directions,
         duration,
+        harmonies,
     }
 }
 
@@ -161,12 +164,12 @@ pub fn parse_measure(el: Node) -> Measure {
 mod test_measure {
     use std::fs;
 
-    use roxmltree::Document;
     use crate::musicxml::measure::parse_measure;
-    
+    use roxmltree::Document;
+
     #[test]
     fn example() {
-        let xml:&str = r#"<measure number=\"1\"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure>"#;
+        let xml: &str = r#"<measure number=\"1\"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure>"#;
         let item = parse_measure(Document::parse(&xml).unwrap().root_element());
         assert_eq!(1, item.notes.len());
     }
@@ -194,9 +197,8 @@ mod test_measure {
         for n in item.notes {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
         }
-
     }
-    
+
     #[test]
     fn test_lyrics_placement() {
         let xml = fs::read_to_string("xml-files/measure/test-lyrics-placement.xml").unwrap();
@@ -205,9 +207,8 @@ mod test_measure {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
             println!("n.lyrics_above:{:?}", n.lyrics_above);
         }
-
     }
-    
+
     #[test]
     fn test_lyrics_placement_voices() {
         let xml = fs::read_to_string("xml-files/measure/test-lyrics-placement2.xml").unwrap();
@@ -216,7 +217,6 @@ mod test_measure {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
             println!("n.lyrics_above:{:?}", n.lyrics_above);
         }
-
     }
 
     #[test]
@@ -346,7 +346,123 @@ mod test_measure {
         </barline>
       </measure>"#;
 
-      let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+    }
 
+    #[test]
+    fn test_harmonies() {
+        let xml = r#" <measure number="1">
+        <attributes>
+          <divisions>4</divisions>
+          <key number="1">
+            <fifths>2</fifths>
+            <mode>major</mode>
+          </key>
+          <time>
+            <beats>4</beats>
+            <beat-type>4</beat-type>
+          </time>
+          <staves>1</staves>
+          <clef number="1">
+            <sign>G</sign>
+            <line>2</line>
+          </clef>
+        </attributes>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>4</duration>
+          <voice>1</voice>
+          <type>quarter</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <backup>
+          <duration>4</duration>
+        </backup>
+        <harmony>
+          <root>
+            <root-step>D</root-step>
+            <root-alter>0</root-alter>
+          </root>
+          <kind text="">major</kind>
+        </harmony>
+        <forward>
+          <duration>4</duration>
+        </forward>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>4</duration>
+          <voice>1</voice>
+          <type>quarter</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <backup>
+          <duration>4</duration>
+        </backup>
+        <harmony>
+          <root>
+            <root-step>A</root-step>
+            <root-alter>0</root-alter>
+          </root>
+          <kind text="7">dominant</kind>
+          <bass>
+            <bass-step>E</bass-step>
+            <bass-alter>0</bass-alter>
+          </bass>
+        </harmony>
+        <forward>
+          <duration>4</duration>
+        </forward>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>4</duration>
+          <voice>1</voice>
+          <type>quarter</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+        <backup>
+          <duration>4</duration>
+        </backup>
+        <harmony>
+          <root>
+            <root-step>D</root-step>
+            <root-alter>0</root-alter>
+          </root>
+          <kind text="">major</kind>
+          <bass>
+            <bass-step>F</bass-step>
+            <bass-alter>1</bass-alter>
+          </bass>
+        </harmony>
+        <forward>
+          <duration>4</duration>
+        </forward>
+        <note>
+          <pitch>
+            <step>G</step>
+            <octave>4</octave>
+          </pitch>
+          <duration>4</duration>
+          <voice>1</voice>
+          <type>quarter</type>
+          <stem>up</stem>
+          <staff>1</staff>
+        </note>
+      </measure>"#;
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        // for harmony in item.harmonies {
+        //     println!("harmony:{:?}", harmony);
+        // }
     }
 }

@@ -1,13 +1,9 @@
+use super::core::NotationType;
+use crate::musicxml::core::StartStop;
+use roxmltree::{Node, NodeType};
 use std::str::FromStr;
 
-use roxmltree::{Node, NodeType};
-
-use crate::musicxml::core::StartStop;
-
-use super::core::NotationType;
-
-pub fn parse_notations(el:Node)->Vec<NotationType> {
-
+pub fn parse_notations(el: Node) -> Vec<NotationType> {
     for attr in el.attributes() {
         match attr.name() {
             _ => {
@@ -16,7 +12,7 @@ pub fn parse_notations(el:Node)->Vec<NotationType> {
         }
     }
 
-    let mut notation_types:Vec<NotationType> = vec![];
+    let mut notation_types: Vec<NotationType> = vec![];
     for child in el.children() {
         let child_name = child.tag_name().name();
         match child.node_type() {
@@ -26,11 +22,10 @@ pub fn parse_notations(el:Node)->Vec<NotationType> {
                     if let Some(text) = child.text() {
                         println!("articulation text:{:?}", text);
                     }
-
                 }
                 "slur" => {
                     let mut slur_type = StartStop::Start;
-                    let mut slur_number:u8 = 0;
+                    let mut slur_number: u8 = 0;
                     for attr in child.attributes() {
                         println!("attr:{:?}", attr);
                         match attr.name() {
@@ -40,12 +35,15 @@ pub fn parse_notations(el:Node)->Vec<NotationType> {
                             "number" => {
                                 slur_number = attr.value().parse().unwrap();
                             }
-                            _=>{
+                            _ => {
                                 println!("Unknown notations slur attribute:{}", attr.value());
                             }
                         }
                     }
-                    notation_types.push(NotationType::Slur { s: slur_type, number: slur_number });
+                    notation_types.push(NotationType::Slur {
+                        s: slur_type,
+                        number: slur_number,
+                    });
                 }
                 "tied" => {
                     let mut tie_type = StartStop::Start;
@@ -54,25 +52,22 @@ pub fn parse_notations(el:Node)->Vec<NotationType> {
                             "type" => {
                                 tie_type = StartStop::from_str(attr.value()).unwrap();
                             }
-                            _=>{
+                            _ => {
                                 println!("Unknown notations tied attribute:{}", attr.value());
                             }
                         }
                     }
                     notation_types.push(NotationType::Tied { s: tie_type });
-
                 }
                 _ => {
                     println!("UNKNOWN notations child: {}", child_name);
                 }
-            }
-            _=>{}
+            },
+            _ => {}
         }
     }
     notation_types
-
 }
-
 
 #[cfg(test)]
 mod tests {
@@ -81,8 +76,8 @@ mod tests {
     use crate::musicxml::notations::parse_notations;
 
     #[test]
-        fn notations() {
-            let xml = r#"<notations>
+    fn notations() {
+        let xml = r#"<notations>
             <articulations>
               <staccato placement="below"/>
               <tenuto placement="below"/>
@@ -90,9 +85,8 @@ mod tests {
               <strong-accent placement="above" type="up"/>
             </articulations>
           </notations>"#;
-            let item = parse_notations(Document::parse(&xml).unwrap().root_element());
-            
-            println!("notations:{:?}", item);
-        }
-    
+        let item = parse_notations(Document::parse(&xml).unwrap().root_element());
+
+        println!("notations:{:?}", item);
+    }
 }

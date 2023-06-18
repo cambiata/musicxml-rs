@@ -2,8 +2,8 @@ use std::str::FromStr;
 
 use crate::musicxml::core::{DirectionType, WedgeType};
 
-use super::core::{ Placement};
-use roxmltree::{Node};
+use super::core::Placement;
+use roxmltree::Node;
 
 #[derive(Debug)]
 pub struct Direction {
@@ -40,7 +40,6 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
         let child_name = child.tag_name().name();
         match child_name {
             "direction-type" => {
-                println!(":direction-type");
                 for item in child.children() {
                     let item_name = item.tag_name().name();
                     match item_name {
@@ -112,6 +111,18 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                                 per_minute,
                             });
                         }
+                        "rehearsal" => {
+                            let text = item.text().unwrap().trim();
+                            directiontypes.push(DirectionType::Rehersal {
+                                text: text.to_string(),
+                            });
+                        }
+                        "segno" => {
+                            directiontypes.push(DirectionType::Segno);
+                        }
+                        "coda" => {
+                            directiontypes.push(DirectionType::Coda);
+                        }
                         "" => {}
                         _ => {
                             panic!("UNKNOWN direction-type: {}", item_name);
@@ -141,33 +152,28 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
     }
 }
 
-
 #[cfg(test)]
 mod test_direction {
+    use super::parse_direction;
     use roxmltree::Document;
 
-    use super::parse_direction;
-
     #[test]
-    fn test1()  {
-        {
-            let xml = r#"<direction>
+    fn test1() {
+        let xml = r#"<direction>
             <direction-type>
               <wedge type="crescendo" number="1"/>
             </direction-type>
             <staff>1</staff>
           </direction>"#;
-            let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
-            assert_eq!(item.staff, 1);
-            assert_eq!(item.directiontypes.len(), 1);
-            let dir_type = &item.directiontypes[0];
-            println!("dir_type:{:?}", dir_type);
-        }
+        let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
+        assert_eq!(item.staff, 1);
+        assert_eq!(item.directiontypes.len(), 1);
+        let dir_type = &item.directiontypes[0];
+        println!("dir_type:{:?}", dir_type);
     }
     #[test]
-    fn test_tempi()  {
-        {
-            let xml = r#"<direction placement="above" directive="yes">
+    fn test_tempi() {
+        let xml = r#"<direction placement="above" directive="yes">
             <direction-type>
               <words font-style="normal" font-weight="bold">Allegro moderato</words>
             </direction-type>
@@ -182,10 +188,12 @@ mod test_direction {
             let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
             assert_eq!(item.staff, 1);
             assert_eq!(item.directiontypes.len(), 2);
+            
             let dir_type0 = &item.directiontypes[0];
             println!("dir_type0:{:?}", dir_type0);
             let dir_type1 = &item.directiontypes[1];
             println!("dir_type1:{:?}", dir_type1);
+
         }
     }
 }

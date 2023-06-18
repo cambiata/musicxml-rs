@@ -1,8 +1,6 @@
-use std::str::FromStr;
-
-use roxmltree::{Node, NodeType};
-
 use super::core::{Pitch, Step};
+use roxmltree::{Node, NodeType};
+use std::str::FromStr;
 
 pub fn parse_option_pitch(el: Node) -> Option<Pitch> {
     let mut step: Step = Step::A;
