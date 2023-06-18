@@ -1,3 +1,2 @@
-pub use crate::error::Error::{Generic, UnknownAttribute, UnknownElement, IO};
-
-pub type Result<T> = core::result::Result<T, crate::error::Error>;
+pub use crate::error::MusicXmlError::{Generic, TextfieldEmpty, UnknownAttribute, UnknownElement};
+pub type Result<T> = anyhow::Result<T>;

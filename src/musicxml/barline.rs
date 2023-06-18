@@ -1,6 +1,6 @@
-use std::str::FromStr;
-
+use crate::prelude::*;
 use roxmltree::Node;
+use std::str::FromStr;
 
 use super::core::{BarStyle, Location, RepeatDirection};
 
@@ -11,7 +11,7 @@ pub struct Barline {
     pub barstyle: BarStyle,
 }
 
-pub fn parse_barline(el: Node) -> Barline {
+pub fn parse_barline(el: Node) -> Result<Barline> {
     let mut location: Location = Location::Right;
     let mut barstyle: BarStyle = BarStyle::Standard;
     let mut repeatdirection: Option<RepeatDirection> = None;
@@ -23,6 +23,7 @@ pub fn parse_barline(el: Node) -> Barline {
             }
             _ => {
                 println!("Unhandled barline attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("barline element: {}", attr.name())).into());
             }
         }
     }
@@ -51,13 +52,14 @@ pub fn parse_barline(el: Node) -> Barline {
             "" => {}
             _ => {
                 println!("UNKNOWN barline child: {}", child_name);
+                return Err(UnknownElement(format!("barline element: {child_name}")).into());
             }
         }
     }
 
-    Barline {
+    Ok(Barline {
         location,
         repeatdirection,
         barstyle,
-    }
+    })
 }

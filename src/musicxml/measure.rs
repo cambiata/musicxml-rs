@@ -1,3 +1,5 @@
+use crate::prelude::*;
+
 use roxmltree::{Node, NodeType};
 
 use crate::musicxml::barline::parse_barline;
@@ -8,6 +10,7 @@ use super::{
     core::Location,
     direction::{parse_direction, Direction},
     harmony::parse_harmony,
+    harmony::Harmony,
     note::{parse_note, Note},
 };
 
@@ -32,7 +35,7 @@ impl Measure {
         voice
     }
 }
-pub fn parse_measure(el: Node) -> Measure {
+pub fn parse_measure(el: Node) -> Result<Measure> {
     let mut number = "";
     let mut notes: Vec<Note> = vec![];
     let mut directions: Vec<Direction> = vec![];
@@ -53,6 +56,7 @@ pub fn parse_measure(el: Node) -> Measure {
             "width" => {}
             _ => {
                 println!("Unhandled measure attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("measure element: {}", attr.name())).into());
             }
         }
     }
@@ -61,7 +65,7 @@ pub fn parse_measure(el: Node) -> Measure {
         let child_name = child.tag_name().name();
         match child_name {
             "note" => {
-                let note = parse_note(child, curr_pos);
+                let note = parse_note(child, curr_pos)?;
                 if note.chord {
                     let len = notes.len() - 1;
                     if let Some(prev_note) = notes.get_mut(len) {
@@ -75,12 +79,12 @@ pub fn parse_measure(el: Node) -> Measure {
             }
 
             "direction" => {
-                let direction = parse_direction(child, curr_pos);
+                let direction = parse_direction(child, curr_pos)?;
                 directions.push(direction);
             }
 
             "attributes" => {
-                attributes = parse_attributes(child);
+                attributes = parse_attributes(child)?;
             }
 
             "backup" => {
@@ -126,7 +130,7 @@ pub fn parse_measure(el: Node) -> Measure {
             }
 
             "harmony" => {
-                let harmony = parse_harmony(child, curr_pos);
+                let harmony = parse_harmony(child, curr_pos)?;
                 harmonies.push(harmony);
             }
 
@@ -135,7 +139,7 @@ pub fn parse_measure(el: Node) -> Measure {
             }
 
             "barline" => {
-                let barline = parse_barline(child);
+                let barline = parse_barline(child)?;
                 match barline.location {
                     Location::Left => barline_left = barline,
                     Location::Right => barline_right = barline,
@@ -146,38 +150,39 @@ pub fn parse_measure(el: Node) -> Measure {
             "" => {}
             _ => {
                 panic!("UNKNOWN measure child: {}", child_name);
+                return Err(UnknownElement(format!("measure element: {child_name}")).into());
             }
         }
     }
 
-    Measure {
+    Ok(Measure {
         number: number.to_string(),
         notes,
         attributes,
         directions,
         duration,
         harmonies,
-    }
+    })
 }
 
 #[cfg(test)]
 mod test_measure {
-    use std::fs;
-
     use crate::musicxml::measure::parse_measure;
+    use crate::prelude::*;
     use roxmltree::Document;
+    use std::fs;
 
     #[test]
     fn example() {
         let xml: &str = r#"<measure number=\"1\"><attributes><divisions>1</divisions><key><fifths>0</fifths></key><time><beats>4</beats><beat-type>4</beat-type></time><clef><sign>G</sign><line>2</line></clef></attributes><note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note></measure>"#;
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         assert_eq!(1, item.notes.len());
     }
 
     #[test]
     fn test_voices() {
         let xml = fs::read_to_string("xml-files/measure/test-voices.xml").unwrap();
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         assert_eq!(4, item.notes.len());
         let voice1 = item.get_voice(1);
         let voice2 = item.get_voice(2);
@@ -193,7 +198,7 @@ mod test_measure {
     #[test]
     fn test_lyrics1() {
         let xml = fs::read_to_string("xml-files/measure/test-lyrics1.musicxml").unwrap();
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         for n in item.notes {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
         }
@@ -202,7 +207,7 @@ mod test_measure {
     #[test]
     fn test_lyrics_placement() {
         let xml = fs::read_to_string("xml-files/measure/test-lyrics-placement.xml").unwrap();
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         for n in item.notes {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
             println!("n.lyrics_above:{:?}", n.lyrics_above);
@@ -212,7 +217,7 @@ mod test_measure {
     #[test]
     fn test_lyrics_placement_voices() {
         let xml = fs::read_to_string("xml-files/measure/test-lyrics-placement2.xml").unwrap();
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         for n in item.notes {
             println!("n.lyrics_below:{:?}", n.lyrics_below);
             println!("n.lyrics_above:{:?}", n.lyrics_above);
@@ -222,7 +227,7 @@ mod test_measure {
     #[test]
     fn test_directions_dynamics() {
         let xml = fs::read_to_string("xml-files/measure/test-directions-dynamics.xml").unwrap();
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         for direction in item.directions {
             println!("direction:{:?}", direction);
         }
@@ -346,7 +351,7 @@ mod test_measure {
         </barline>
       </measure>"#;
 
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
     }
 
     #[test]
@@ -460,7 +465,7 @@ mod test_measure {
           <staff>1</staff>
         </note>
       </measure>"#;
-        let item = parse_measure(Document::parse(&xml).unwrap().root_element());
+        let item = parse_measure(Document::parse(&xml).unwrap().root_element()).unwrap();
         // for harmony in item.harmonies {
         //     println!("harmony:{:?}", harmony);
         // }

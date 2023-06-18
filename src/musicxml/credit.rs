@@ -1,11 +1,14 @@
+use crate::prelude::*;
+
 use roxmltree::Node;
 
-pub fn parse_credit(el:Node) -> Credit {
+pub fn parse_credit(el: Node) -> Result<Credit> {
     for attr in el.attributes() {
         match attr.name() {
             "page" => {}
             _ => {
                 println!("UNKNOWN credits attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("credits element: {}", attr.name())).into());
             }
         }
     }
@@ -17,14 +20,12 @@ pub fn parse_credit(el:Node) -> Credit {
             "" => {}
             _ => {
                 println!("UNKNOWN credits child: {}", child_name);
+                return Err(UnknownElement(format!("credits element: {child_name}")).into());
             }
         }
     }
 
-    Credit {}
-        
+    Ok(Credit {})
 }
 #[derive(Debug)]
-pub struct Credit {
-
-}
+pub struct Credit {}

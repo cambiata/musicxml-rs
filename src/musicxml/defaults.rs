@@ -1,10 +1,11 @@
+use crate::prelude::*;
 use roxmltree::Node;
-
-pub fn parse_defaults(el:Node) -> Defaults {
+pub fn parse_defaults(el: Node) -> Result<Defaults> {
     for attr in el.attributes() {
         match attr.name() {
             _ => {
                 println!("UNKNOWN defaults attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("defaults element: {}", attr.name())).into());
             }
         }
     }
@@ -19,14 +20,12 @@ pub fn parse_defaults(el:Node) -> Defaults {
             "" => {}
             _ => {
                 println!("UNKNOWN defaults child: {}", child_name);
+                return Err(UnknownElement(format!("defaults element: {child_name}")).into());
             }
         }
     }
 
-    Defaults {}
-        
+    Ok(Defaults {})
 }
 #[derive(Debug)]
-pub struct Defaults {
-
-}
+pub struct Defaults {}

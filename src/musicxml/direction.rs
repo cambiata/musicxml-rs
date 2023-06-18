@@ -1,3 +1,4 @@
+use crate::prelude::*;
 use std::str::FromStr;
 
 use crate::musicxml::core::{DirectionType, WedgeType};
@@ -14,9 +15,7 @@ pub struct Direction {
     pub directive: bool,
 }
 
-pub fn parse_direction(el: Node, position: usize) -> Direction {
-    println!("- parse_direction {}", position);
-
+pub fn parse_direction(el: Node, position: usize) -> Result<Direction> {
     let mut directiontypes: Vec<DirectionType> = vec![];
     let mut staff: u8 = 1;
     let mut placement: Option<Placement> = None;
@@ -46,7 +45,6 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                         "wedge" => {
                             let mut wedgetype: WedgeType = WedgeType::Crescendo;
                             let mut number: u8 = 1;
-                            println!("- - wedge");
                             for attr in item.attributes() {
                                 match attr.name() {
                                     "type" => {
@@ -60,6 +58,11 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
                                     }
                                     _ => {
                                         println!("Unhandled wedge attribute: {}", attr.name());
+                                        return Err(UnknownAttribute(format!(
+                                            "wedge element: {}",
+                                            attr.name()
+                                        ))
+                                        .into());
                                     }
                                 }
                             }
@@ -139,17 +142,18 @@ pub fn parse_direction(el: Node, position: usize) -> Direction {
             "" => {}
             _ => {
                 panic!("UNKNOWN direction child: {}", child_name);
+                return Err(UnknownElement(format!("direction element: {child_name}")).into());
             }
         }
     }
 
-    Direction {
+    Ok(Direction {
         position,
         directive,
         directiontypes,
         staff,
         placement,
-    }
+    })
 }
 
 #[cfg(test)]
@@ -165,7 +169,7 @@ mod test_direction {
             </direction-type>
             <staff>1</staff>
           </direction>"#;
-        let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
+        let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
         assert_eq!(item.staff, 1);
         assert_eq!(item.directiontypes.len(), 1);
         let dir_type = &item.directiontypes[0];
@@ -185,15 +189,14 @@ mod test_direction {
             </direction-type>
             <staff>1</staff>
           </direction>"#;
-            let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0);
-            assert_eq!(item.staff, 1);
-            assert_eq!(item.directiontypes.len(), 2);
-            
-            let dir_type0 = &item.directiontypes[0];
-            println!("dir_type0:{:?}", dir_type0);
-            let dir_type1 = &item.directiontypes[1];
-            println!("dir_type1:{:?}", dir_type1);
+        let item = parse_direction(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
+        assert_eq!(item.staff, 1);
+        assert_eq!(item.directiontypes.len(), 2);
 
-        }
+        let dir_type0 = &item.directiontypes[0];
+        println!("dir_type0:{:?}", dir_type0);
+        let dir_type1 = &item.directiontypes[1];
+        println!("dir_type1:{:?}", dir_type1);
     }
+    // }
 }

@@ -1,5 +1,7 @@
 use roxmltree::{Node, NodeType};
 
+use crate::prelude::*;
+
 #[derive(Debug)]
 pub struct Attributes {
     pub divisions: Option<usize>,
@@ -35,12 +37,14 @@ impl Attributes {
     }
 }
 
-pub fn parse_attributes(el: Node) -> Attributes {
+pub fn parse_attributes(el: Node) -> Result<Attributes> {
     let mut divisions: Option<usize> = None;
     let mut staves: Option<u8> = None;
     let mut key: Option<Key> = None;
     let mut time: Option<Time> = None;
     let mut clef: Option<Clef> = None;
+
+    // return Err(UnknownAttribute(format!("XXXX element: {}", attr.name())).into());
 
     for child in el.children() {
         let child_name = child.tag_name().name();
@@ -71,30 +75,31 @@ pub fn parse_attributes(el: Node) -> Attributes {
                 }
             }
             "key" => {
-                key = parse_option_key(child);
+                key = parse_option_key(child)?;
             }
             "time" => {
-                time = parse_option_time(child);
+                time = parse_option_time(child)?;
             }
             "clef" => {
-                clef = parse_option_clef(child);
+                clef = parse_option_clef(child)?;
             }
             "" => {}
             _ => {
                 println!("UNKNOWN attributes child: {}", child_name);
+                return Err(UnknownElement(format!("attributes element: {child_name}")).into());
             }
         }
     }
-    Attributes {
+    Ok(Attributes {
         divisions,
         staves,
         key,
         time,
         clef,
-    }
+    })
 }
 
-pub fn parse_option_key(el: Node) -> Option<Key> {
+pub fn parse_option_key(el: Node) -> Result<Option<Key>> {
     let mut key: Option<Key> = None;
     for child in el.children() {
         let child_name = child.tag_name().name();
@@ -112,10 +117,11 @@ pub fn parse_option_key(el: Node) -> Option<Key> {
             "" => {}
             _ => {
                 println!("UNKNOWN key child: {}", child_name);
+                return Err(UnknownElement(format!("key element: {child_name}")).into());
             }
         }
     }
-    key
+    Ok(key)
 }
 
 /*
@@ -125,7 +131,7 @@ pub fn parse_option_key(el: Node) -> Option<Key> {
        </key>
 */
 
-pub fn parse_option_time(el: Node) -> Option<Time> {
+pub fn parse_option_time(el: Node) -> Result<Option<Time>> {
     let mut beats: u8 = 0;
     let mut beat_type: u8 = 0;
     for child in el.children() {
@@ -145,17 +151,19 @@ pub fn parse_option_time(el: Node) -> Option<Time> {
                     }
                 }
             }
+
             "" => {}
             _ => {
                 println!("UNKNOWN time child: {}", child_name);
+                return Err(UnknownElement(format!("time element: {child_name}")).into());
             }
         }
     }
 
-    Some(Time { beats, beat_type })
+    Ok(Some(Time { beats, beat_type }))
 }
 
-pub fn parse_option_clef(el: Node) -> Option<Clef> {
+pub fn parse_option_clef(el: Node) -> Result<Option<Clef>> {
     let mut sign: char = 'G';
     let mut line: i8 = 0;
     for child in el.children() {
@@ -178,8 +186,9 @@ pub fn parse_option_clef(el: Node) -> Option<Clef> {
             "" => {}
             _ => {
                 println!("UNKNOWN clef child {}", child_name);
+                return Err(UnknownElement(format!("clef element: {child_name}")).into());
             }
         }
     }
-    Some(Clef { sign, line })
+    Ok(Some(Clef { sign, line }))
 }

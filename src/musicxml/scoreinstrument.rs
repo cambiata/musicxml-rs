@@ -1,8 +1,9 @@
+use crate::prelude::*;
 use roxmltree::Node;
 
-pub fn parse_score_instrument(el:Node) -> ScoreInstrument {
-    let mut id:&str = "";
-    let mut instrument_name:&str = "";
+pub fn parse_score_instrument(el: Node) -> Result<ScoreInstrument> {
+    let mut id: &str = "";
+    let mut instrument_name: &str = "";
     for attr in el.attributes() {
         match attr.name() {
             "id" => {
@@ -10,6 +11,9 @@ pub fn parse_score_instrument(el:Node) -> ScoreInstrument {
             }
             _ => {
                 println!("UNKNOWN score_instrument attribute: {}", attr.name());
+                return Err(
+                    UnknownAttribute(format!("score_instrument element: {}", attr.name())).into(),
+                );
             }
         }
     }
@@ -25,18 +29,20 @@ pub fn parse_score_instrument(el:Node) -> ScoreInstrument {
             "" => {}
             _ => {
                 println!("UNKNOWN score_instrument child: {}", child_name);
+                return Err(
+                    UnknownElement(format!("score_instrument element: {child_name}")).into(),
+                );
             }
         }
     }
 
-    ScoreInstrument {
-        id:id.to_string(),
+    Ok(ScoreInstrument {
+        id: id.to_string(),
         instrument_name: instrument_name.to_string(),
-    }
-        
+    })
 }
 #[derive(Debug)]
 pub struct ScoreInstrument {
-    id:String,
-    instrument_name:String,
+    id: String,
+    instrument_name: String,
 }

@@ -39,10 +39,9 @@ pub fn parse_score_partwise(el: Node) -> Result<ScorePartwise> {
                 version = attr.value();
             }
             _ => {
-                return Err(UnknownAttribute(format!(
-                    "scorepartwise element: {}",
-                    attr.name()
-                )));
+                return Err(
+                    UnknownAttribute(format!("scorepartwise element: {}", attr.name())).into(),
+                );
             }
         }
     }
@@ -53,46 +52,37 @@ pub fn parse_score_partwise(el: Node) -> Result<ScorePartwise> {
             "part-list" => {
                 for item in child.children() {
                     if item.node_type() == NodeType::Element {
-                        let scorepart = parse_scorepart(item);
+                        let scorepart = parse_scorepart(item)?;
                         partlist.push(scorepart);
                     }
-
-                    // match item.node_type() {
-                    //     NodeType::Element => {
-                    //         let scorepart = parse_scorepart(item);
-                    //         partlist.push(scorepart);
-                    //     }
-                    //     _ => {}
-                    // }
                 }
             }
             "part" => {
-                let item = parse_part(child);
+                let item = parse_part(child)?;
                 parts.push(item);
             }
             "work" => {
-                let item: Work = parse_work(child);
+                let item: Work = parse_work(child)?;
                 work = Some(item);
             }
             "identification" => {
-                let item: Identification = parse_identification(child);
+                let item: Identification = parse_identification(child)?;
                 identification = Some(item);
             }
             "defaults" => {
-                let item: Defaults = parse_defaults(child);
+                let item: Defaults = parse_defaults(child)?;
                 defaults = Some(item);
             }
             "credit" => {
-                let item: Credit = parse_credit(child);
+                let item: Credit = parse_credit(child)?;
                 credits.push(item);
             }
+            "movement-title" => {}
 
             "" => {}
             _ => {
                 println!("Unknown score_partwise child: {}", child_name);
-                // return Err(UnknownElement(format!(
-                //     "scorepartwise element: {child_name}"
-                // )));
+                return Err(UnknownElement(format!("scorepartwise element: {child_name}")).into());
             }
         }
     }

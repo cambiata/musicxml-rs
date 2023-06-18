@@ -2,10 +2,10 @@ use std::str::FromStr;
 
 use roxmltree::{Node, NodeType};
 
-use super::core::{SyllabicType, Lyric, Placement};
+use super::core::{Lyric, Placement, SyllabicType};
+use crate::prelude::*;
 
-
-pub fn parse_option_lyric(el: Node) -> Lyric {
+pub fn parse_option_lyric(el: Node) -> Result<Lyric> {
     let mut number: u8 = 1;
     let mut syllabic: SyllabicType = SyllabicType::Single;
     let mut text: &str = "";
@@ -22,7 +22,10 @@ pub fn parse_option_lyric(el: Node) -> Lyric {
             "placement" => {
                 placement = Placement::from_str(attr.value()).unwrap_or(Placement::Below);
             }
-            _ => {}
+            _ => {
+                println!("Unhandled lyric attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("lyric element: {}", attr.name())).into());
+            }
         }
     }
 
@@ -47,31 +50,34 @@ pub fn parse_option_lyric(el: Node) -> Lyric {
                 }
                 _ => {}
             },
-            _ => {}
+            _ => {
+                println!("Unhandled lyric child: {}", child_name);
+                return Err(UnknownElement(format!("lyric element: {child_name}")).into());
+            }
         }
     }
 
-    Lyric {
+    Ok(Lyric {
         number,
         placement,
         syllabic,
         text: text.to_string(),
         extend,
-    }
+    })
 }
 
 #[cfg(test)]
 mod tests {
-    use roxmltree::{Document};
-    use crate::musicxml::core::{Placement, SyllabicType};
     use super::parse_option_lyric;
+    use crate::musicxml::core::{Placement, SyllabicType};
+    use roxmltree::Document;
     #[test]
-    fn test1()  {
+    fn test1() {
         let xml = r#"<lyric number="1" placement="below">
             <syllabic>begin</syllabic>
             <text>Hej</text>
         </lyric>"#;
-        let item = parse_option_lyric(Document::parse(xml).unwrap().root_element()); 
+        let item = parse_option_lyric(Document::parse(xml).unwrap().root_element()).unwrap();
         assert_eq!(Placement::Below, item.placement);
         assert_eq!(SyllabicType::Begin, item.syllabic);
         assert_eq!("Hej", item.text);

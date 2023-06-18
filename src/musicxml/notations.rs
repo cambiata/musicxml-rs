@@ -1,13 +1,15 @@
 use super::core::NotationType;
-use crate::musicxml::core::StartStop;
+use crate::musicxml::core::Articulation;
+use crate::musicxml::{articulations::parse_articulations, core::StartStop};
+use crate::prelude::*;
 use roxmltree::{Node, NodeType};
 use std::str::FromStr;
-
-pub fn parse_notations(el: Node) -> Vec<NotationType> {
+pub fn parse_notations(el: Node) -> Result<Vec<NotationType>> {
     for attr in el.attributes() {
         match attr.name() {
             _ => {
                 println!("Unhandled notations attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("notations element: {}", attr.name())).into());
             }
         }
     }
@@ -17,10 +19,13 @@ pub fn parse_notations(el: Node) -> Vec<NotationType> {
         let child_name = child.tag_name().name();
         match child.node_type() {
             NodeType::Element => match child_name {
-                "aticulations" => {
-                    println!("Articulations {:?}", child.text());
-                    if let Some(text) = child.text() {
-                        println!("articulation text:{:?}", text);
+                "articulations" => {
+                    let articulations: Vec<Articulation> = parse_articulations(child)?;
+                    for articulation in articulations.iter() {
+                        notation_types.push(NotationType::Articulations(
+                            articulation.0.clone(),
+                            articulation.1.clone(),
+                        ));
                     }
                 }
                 "slur" => {
@@ -61,19 +66,22 @@ pub fn parse_notations(el: Node) -> Vec<NotationType> {
                 }
                 _ => {
                     println!("UNKNOWN notations child: {}", child_name);
+                    return Err(UnknownElement(format!("notations element: {child_name}")).into());
                 }
             },
             _ => {}
         }
     }
-    notation_types
+    Ok(notation_types)
 }
 
 #[cfg(test)]
 mod tests {
+    use crate::musicxml::{
+        core::{Articulation, ArticulationType, NotationType},
+        notations::parse_notations,
+    };
     use roxmltree::Document;
-
-    use crate::musicxml::notations::parse_notations;
 
     #[test]
     fn notations() {
@@ -85,8 +93,18 @@ mod tests {
               <strong-accent placement="above" type="up"/>
             </articulations>
           </notations>"#;
-        let item = parse_notations(Document::parse(&xml).unwrap().root_element());
+        let items: Vec<NotationType> =
+            parse_notations(Document::parse(&xml).unwrap().root_element()).unwrap();
+        assert_eq!(items.len(), 4);
+        let mut iter = items.iter();
+        dbg!(iter.next().unwrap());
 
-        println!("notations:{:?}", item);
+        // assert_eq!(
+        //     iter.next().unwrap(),
+        //     NotationType::Articulations(
+        //         crate::musicxml::core::ArticulationType::Staccato,
+        //         Some(crate::musicxml::core::Placement::Below)
+        //     )
+        // );
     }
 }

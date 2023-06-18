@@ -1,14 +1,14 @@
 use super::core::{HarmonyItem, HarmonyKind, Step};
+use crate::prelude::*;
 use roxmltree::Node;
 use std::str::FromStr;
-
 #[derive(Debug)]
 pub struct Harmony {
     items: Vec<HarmonyItem>,
     position: usize,
 }
 
-pub fn parse_harmony(el: Node, position: usize) -> Harmony {
+pub fn parse_harmony(el: Node, position: usize) -> Result<Harmony> {
     let mut items: Vec<HarmonyItem> = vec![];
 
     for attr in el.attributes() {
@@ -18,6 +18,7 @@ pub fn parse_harmony(el: Node, position: usize) -> Harmony {
             // }
             _ => {
                 println!("Unhandled harmony attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("harmony element: {}", attr.name())).into());
             }
         }
     }
@@ -94,6 +95,10 @@ pub fn parse_harmony(el: Node, position: usize) -> Harmony {
                         "" => {}
                         _ => {
                             println!("Unhandled harmony bass child: {}", item_name);
+                            // return Err(UnknownElement(format!(
+                            //     "harmony bass element: {child_name}"
+                            // ))
+                            // .into());
                         }
                     }
                 });
@@ -105,11 +110,12 @@ pub fn parse_harmony(el: Node, position: usize) -> Harmony {
             "" => {}
             _ => {
                 panic!("UNKNOWN harmony child: {}", child_name);
+                return Err(UnknownElement(format!("harmony element: {child_name}")).into());
             }
         }
     }
 
-    Harmony { items, position }
+    Ok(Harmony { items, position })
 }
 
 #[cfg(test)]
@@ -131,7 +137,7 @@ mod tests {
         </bass>
       </harmony>"#;
 
-        let item = parse_harmony(Document::parse(&xml).unwrap().root_element(), 0);
+        let item = parse_harmony(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
         println!("{:?}", item);
     }
 }

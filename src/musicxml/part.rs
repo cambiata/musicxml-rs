@@ -1,4 +1,5 @@
-use roxmltree::{Node};
+use crate::prelude::*;
+use roxmltree::Node;
 
 use super::measure::{parse_measure, Measure};
 
@@ -8,7 +9,7 @@ pub struct Part {
     pub measures: Vec<Measure>,
 }
 
-pub fn parse_part(el: Node) -> Part {
+pub fn parse_part(el: Node) -> Result<Part> {
     let mut id = "";
     let mut measures: Vec<Measure> = vec![];
 
@@ -19,6 +20,7 @@ pub fn parse_part(el: Node) -> Part {
             }
             _ => {
                 println!("UNKNOWN part attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("part element: {}", attr.name())).into());
             }
         }
     }
@@ -27,18 +29,19 @@ pub fn parse_part(el: Node) -> Part {
         let child_name = child.tag_name().name();
         match child_name {
             "measure" => {
-                let measure = parse_measure(child);
+                let measure = parse_measure(child)?;
                 measures.push(measure);
             }
             "" => {}
             _ => {
                 println!("UNKNOWN part child: {}", child_name);
+                return Err(UnknownElement(format!("part element: {child_name}")).into());
             }
         }
     }
 
-    Part {
+    Ok(Part {
         id: id.to_string(),
         measures,
-    }
+    })
 }

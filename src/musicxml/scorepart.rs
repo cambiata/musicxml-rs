@@ -1,5 +1,5 @@
-
-use roxmltree::{Node};
+use crate::prelude::*;
+use roxmltree::Node;
 
 use super::{
     mididevice::{parse_midi_device, MidiDevice},
@@ -16,12 +16,12 @@ pub struct ScorePart {
     pub midi_instrument: Option<MidiInstrument>,
 }
 
-pub fn parse_scorepart(el: Node) -> ScorePart {
+pub fn parse_scorepart(el: Node) -> Result<ScorePart> {
     let mut id = "";
     let mut part_name = "";
     let mut part_abbreviation = "";
     let mut score_instrument: Option<ScoreInstrument> = None;
-    let mut midi_device:Option<MidiDevice> = None;
+    let mut midi_device: Option<MidiDevice> = None;
     let mut midi_instrument: Option<MidiInstrument> = None;
     // let mut parts:Vec<Part> = [];
     for attr in el.attributes() {
@@ -31,6 +31,9 @@ pub fn parse_scorepart(el: Node) -> ScorePart {
             }
             _ => {
                 println!("UNKNOWN scorepart attribute: {}", attr.name());
+                return Err(
+                    UnknownAttribute(format!("scorepartwise element: {}", attr.name())).into(),
+                );
             }
         }
     }
@@ -49,30 +52,31 @@ pub fn parse_scorepart(el: Node) -> ScorePart {
                 }
             }
             "score-instrument" => {
-                let item: ScoreInstrument = parse_score_instrument(child);
+                let item: ScoreInstrument = parse_score_instrument(child)?;
                 score_instrument = Some(item);
             }
             "midi-device" => {
-                let item: MidiDevice = parse_midi_device(child);
+                let item: MidiDevice = parse_midi_device(child)?;
                 midi_device = Some(item);
             }
             "midi-instrument" => {
-                let item: MidiInstrument = parse_midi_instrument(child);
+                let item: MidiInstrument = parse_midi_instrument(child)?;
                 midi_instrument = Some(item);
             }
             "" => {}
             _ => {
                 println!("UNKNOWN scorepart child: {}", child_name);
+                return Err(UnknownElement(format!("scorepart element: {child_name}")).into());
             }
         }
     }
 
-    ScorePart {
+    Ok(ScorePart {
         id: id.to_string(),
         part_name: part_name.to_string(),
         part_abbrevieation: part_abbreviation.to_string(),
         score_instrument,
         midi_device,
         midi_instrument,
-    }
+    })
 }

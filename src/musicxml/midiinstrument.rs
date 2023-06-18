@@ -1,6 +1,6 @@
+use crate::prelude::*;
 use roxmltree::Node;
-
-pub fn parse_midi_instrument(el: Node) -> MidiInstrument {
+pub fn parse_midi_instrument(el: Node) -> Result<MidiInstrument> {
     let mut id: &str = "";
     let mut midi_channel: u8 = 0;
     let mut midi_program: u8 = 0;
@@ -51,17 +51,20 @@ pub fn parse_midi_instrument(el: Node) -> MidiInstrument {
             "" => {}
             _ => {
                 println!("UNKNOWN midi_instrument child: {}", child_name);
+                return Err(
+                    UnknownElement(format!("midi_instrument element: {child_name}")).into(),
+                );
             }
         }
     }
 
-    MidiInstrument {
+    Ok(MidiInstrument {
         id: id.to_string(),
         midi_channel,
         midi_program,
         volume,
         pan,
-    }
+    })
 }
 #[derive(Debug)]
 pub struct MidiInstrument {
@@ -70,5 +73,4 @@ pub struct MidiInstrument {
     pub midi_program: u8,
     pub volume: f32,
     pub pan: f32,
-
 }

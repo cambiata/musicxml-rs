@@ -36,7 +36,7 @@ pub enum SyllabicType {
     Single,
 }
 
-#[derive(Debug, EnumString, PartialEq)]
+#[derive(Debug, EnumString, PartialEq, Clone)]
 pub enum Placement {
     #[strum(serialize = "above")]
     Above,
@@ -114,7 +114,7 @@ pub struct Lyric {
 pub enum NotationType {
     Tied { s: StartStop },
     Slur { s: StartStop, number: u8 },
-    Articulations(ArticulationType, Placement),
+    Articulations(ArticulationType, Option<Placement>),
 }
 
 #[derive(Debug, EnumString, PartialEq)]
@@ -206,7 +206,7 @@ pub enum HarmonyKind {
     Other,
 }
 
-#[derive(Debug, EnumString, PartialEq)]
+#[derive(Debug, EnumString, PartialEq, Clone)]
 pub enum ArticulationType {
     #[strum(serialize = "staccato")]
     Staccato,
@@ -216,6 +216,8 @@ pub enum ArticulationType {
     Accent,
     #[strum(serialize = "strong-accent")]
     StrongAccent,
+    #[strum(serialize = "detached-legato")]
+    DetachedLegato,
 }
-#[derive(Debug,  PartialEq)]
+#[derive(Debug, PartialEq)]
 pub struct Articulation(pub ArticulationType, pub Option<Placement>, pub String);

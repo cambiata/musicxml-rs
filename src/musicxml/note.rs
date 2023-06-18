@@ -1,3 +1,5 @@
+use crate::prelude::*;
+
 use super::{
     core::{DirectionUD, DurationType, Lyric, NotationType, Pitch, Placement},
     lyric::parse_option_lyric,
@@ -25,7 +27,7 @@ pub struct Note {
     pub notations: Vec<NotationType>,
 }
 
-pub fn parse_note(el: Node, position: usize) -> Note {
+pub fn parse_note(el: Node, position: usize) -> Result<Note> {
     let mut duration: usize = 0;
     let mut notetype: DurationType = DurationType::Quarter;
     let mut pitch: Option<Pitch> = None;
@@ -46,6 +48,7 @@ pub fn parse_note(el: Node, position: usize) -> Note {
             "default-y" => {} // TODO?
             _ => {
                 println!("Unhandled note attribute: {}", attr.name());
+                return Err(UnknownAttribute(format!("note element: {}", attr.name())).into());
             }
         }
     }
@@ -70,7 +73,7 @@ pub fn parse_note(el: Node, position: usize) -> Note {
                 pitch = parse_option_pitch(child);
             }
             "lyric" => {
-                let lyric = parse_option_lyric(child);
+                let lyric = parse_option_lyric(child)?;
                 match lyric.placement {
                     Placement::Above => lyrics_above.push(lyric),
                     Placement::Below => lyrics_below.push(lyric),
@@ -105,16 +108,17 @@ pub fn parse_note(el: Node, position: usize) -> Note {
                 chord = true;
             }
             "notations" => {
-                notations = parse_notations(child);
+                notations = parse_notations(child)?;
             }
             "" => {}
             _ => {
                 println!("UNKNOWN note child: {}", child_name);
+                return Err(UnknownElement(format!("note element: {child_name}")).into());
             }
         }
     }
 
-    Note {
+    Ok(Note {
         pitch,
         duration,
         notetype,
@@ -129,19 +133,19 @@ pub fn parse_note(el: Node, position: usize) -> Note {
         lyrics_above,
         lyrics_below,
         notations,
-    }
+    })
 }
 
 #[cfg(test)]
 mod tests_note {
-    use crate::musicxml::core::Step;
     use super::parse_note;
+    use crate::musicxml::core::Step;
     use roxmltree::Document;
 
     #[test]
     fn note() {
         let xml = r#"<note><pitch><step>C</step><octave>4</octave></pitch><duration>4</duration><type>whole</type></note>"#;
-        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
+        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
         assert_eq!(4, note.duration);
         let pitch = &note.pitch.unwrap();
         assert_eq!(Step::C, pitch.step);
@@ -151,7 +155,7 @@ mod tests_note {
     #[test]
     fn doubledot() {
         let xml = r#"<note><pitch><step>G</step><octave>4</octave></pitch><duration>7</duration><voice>1</voice><type>half</type><dot/><dot/><stem>up</stem></note>"#;
-        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
+        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
         assert_eq!(2, note.dots);
     }
 
@@ -172,7 +176,7 @@ mod tests_note {
           <tied type="stop"/>
         </notations>
         </note>"#;
-        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0);
+        let note = parse_note(Document::parse(&xml).unwrap().root_element(), 0).unwrap();
         println!("note.notations:{:?}", note.notations);
     }
 }

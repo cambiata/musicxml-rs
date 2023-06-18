@@ -1,17 +1,23 @@
-#[derive(thiserror::Error, Debug)]
+use anyhow::Result;
+use thiserror::Error;
 
-pub enum Error {
-    #[error("Generic: {0}")]
+#[derive(Error, Debug)]
+pub enum MusicXmlError {
     Generic(String),
-
-    #[error("UnknownElement: {0}")]
     UnknownElement(String),
-    #[error("UnknownAttribute: {0}")]
     UnknownAttribute(String),
+    TextfieldEmpty(String),
+}
 
-    #[error(transparent)]
-    Roxml(#[from] roxmltree::Error),
-
-    #[error(transparent)]
-    IO(#[from] std::io::Error),
+impl std::fmt::Display for MusicXmlError {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            MusicXmlError::Generic(s) => write!(f, "MusicXmlError::Generic error: {}", s),
+            MusicXmlError::UnknownElement(s) => write!(f, "MusicXmlError::UnknownElement: {}", s),
+            MusicXmlError::UnknownAttribute(s) => {
+                write!(f, "MusicXmlError::UnknownAttribute: {}", s)
+            }
+            MusicXmlError::TextfieldEmpty(s) => write!(f, "MusicXmlError::TextfieldEmpty: {}", s),
+        }
+    }
 }

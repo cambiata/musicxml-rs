@@ -27,7 +27,11 @@ pub fn parse_articulations(el: Node) -> Result<Vec<Articulation>> {
                         }
                         _ => {
                             println!("attr.name:{}", attr.name());
-                            return Err(UnknownAttribute(format!("attr.name:{}", attr.name())));
+                            return Err(UnknownAttribute(format!(
+                                "Articulations attribute: {}",
+                                attr.name()
+                            ))
+                            .into());
                         }
                     }
                 }
@@ -43,9 +47,9 @@ pub fn parse_articulations(el: Node) -> Result<Vec<Articulation>> {
 
 #[cfg(test)]
 mod tests {
+    use crate::musicxml::articulations::parse_articulations;
     use crate::prelude::*;
     use roxmltree::Document;
-    use crate::musicxml::articulations::parse_articulations;
 
     #[test]
     fn articulations() -> Result<()> {
@@ -55,7 +59,7 @@ mod tests {
               <accent placement="below"/>
               <strong-accent placement="above" type="up"/>
             </articulations>"#;
-        let item = parse_articulations(Document::parse(&xml).unwrap().root_element())?;
+        let item = parse_articulations(Document::parse(&xml).unwrap().root_element()).unwrap();
 
         println!("notations:{:?}", item);
         Ok(())
