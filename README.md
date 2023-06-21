@@ -7,4 +7,5 @@ fn main() -> Result<()> {
     let score = musicxml::parse(xml)?;
     dbg!(score);
     Ok(())
-  ```
+}
+```
