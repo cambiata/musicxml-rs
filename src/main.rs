@@ -8,7 +8,7 @@ mod prelude;
 
 fn main() -> Result<()> {
     // let xml = fs::read_to_string("music.xml")?;
-    let xml = fs::read_to_string("xml-files/articulation.xml")?;
+    let xml = fs::read_to_string("xml-files/hello-world.xml")?;
     let score = musicxml::parse(xml)?;
     dbg!(score);
     // let part0 = &score.parts[0];
